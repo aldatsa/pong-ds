@@ -13,8 +13,11 @@ Simple sprite demo
 int main(void) {
 	//---------------------------------------------------------------------------------
 	int i = 0;
-	touchPosition touch;
-
+    touchPosition touch;
+    
+    unsigned char ball_x = 0;
+    unsigned char ball_y = 0;
+    
 	videoSetMode(MODE_0_2D);
 	videoSetModeSub(MODE_0_2D);
 
@@ -45,7 +48,7 @@ int main(void) {
 
 		oamSet(&oamMain, //main graphics engine context
 			0,           //oam index (0 to 127)  
-			touch.px, touch.py,   //x and y pixle location of the sprite
+			ball_x, ball_y,   //x and y pixle location of the sprite
 			0,                    //priority, lower renders last (on top)
 			0,					  //this is the palette index if multiple palettes or the alpha value if bmp sprite	
 			SpriteSize_16x16,     
