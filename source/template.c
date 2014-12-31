@@ -17,8 +17,8 @@ int main(void) {
     
     int keys_pressed, keys_held, keys_released;
     
-    unsigned char ball_x = 0;
-    unsigned char ball_y = 0;
+    unsigned char ball_x = SCREEN_WIDTH / 2 - 1 - 4;
+    unsigned char ball_y = SCREEN_HEIGHT / 2 - 1 - 4;
     
 	videoSetMode(MODE_0_2D);
 	videoSetModeSub(MODE_0_2D);
