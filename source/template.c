@@ -15,6 +15,8 @@ int main(void) {
 	int i = 0;
     touchPosition touch;
     
+    int keys_pressed, keys_held, keys_released;
+    
     unsigned char ball_x = 0;
     unsigned char ball_y = 0;
     
@@ -40,12 +42,23 @@ int main(void) {
 	SPRITE_PALETTE_SUB[1] = RGB15(0,31,0);
 
 	while(1) {
-
+        
 		scanKeys();
-
-		if(keysHeld() & KEY_TOUCH)
+        
+        keys_pressed = keysDown();
+        keys_held = keysHeld();
+        keys_released = keysUp();
+        
+		if(keysHeld() & KEY_TOUCH) {
 			touchRead(&touch);
+		}
 
+        if (keys_pressed & KEY_UP) {
+            ball_y = ball_y - 1;
+        } else if (keys_pressed & KEY_DOWN) {
+            ball_y = ball_y + 1;
+        }
+        
 		oamSet(&oamMain, //main graphics engine context
 			0,           //oam index (0 to 127)  
 			ball_x, ball_y,   //x and y pixle location of the sprite
