@@ -33,7 +33,7 @@ int main(void) {
 		gfxSub[i] = 1 | (1 << 8);
 	}
 
-	SPRITE_PALETTE[1] = RGB15(31,0,0);
+	SPRITE_PALETTE[1] = RGB15(31,31,31);    // White
 	SPRITE_PALETTE_SUB[1] = RGB15(0,31,0);
 
 	while(1) {
