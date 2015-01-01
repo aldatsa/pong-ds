@@ -40,6 +40,7 @@ int main(void) {
     ball b = {SCREEN_WIDTH / 2 - 1 - 4, SCREEN_HEIGHT / 2 - 1 - 4, 1, 1, 8, 8};
     
     paddle p1 = {0, SCREEN_HEIGHT / 2 - 1 - 16, 1, 32, 8};
+    paddle p2 = {SCREEN_WIDTH - 8, SCREEN_HEIGHT / 2 - 1 - 16, 1, 32, 8};
     
 	videoSetMode(MODE_0_2D);
 	videoSetModeSub(MODE_0_2D);
@@ -52,6 +53,8 @@ int main(void) {
 
 	u16* gfx = oamAllocateGfx(&oamMain, SpriteSize_8x8, SpriteColorFormat_256Color);
     u16* gfx_p1 = oamAllocateGfx(&oamMain, SpriteSize_8x32, SpriteColorFormat_256Color);
+    u16* gfx_p2 = oamAllocateGfx(&oamMain, SpriteSize_8x32, SpriteColorFormat_256Color);
+    
 	u16* gfxSub = oamAllocateGfx(&oamSub, SpriteSize_16x16, SpriteColorFormat_256Color);
 
 	for(i = 0; i < b.height * b.width / 2; i++)
@@ -63,6 +66,11 @@ int main(void) {
     for(i = 0; i < p1.height * p1.width / 2; i++)
 	{
 		gfx_p1[i] = 1 | (1 << 8);
+	}
+
+    for(i = 0; i < p2.height * p2.width / 2; i++)
+	{
+		gfx_p2[i] = 1 | (1 << 8);
 	}
     
 	SPRITE_PALETTE[1] = RGB15(31,31,31);    // White
@@ -99,6 +107,7 @@ int main(void) {
         b.x = b.x + b.speed_x;
         b.y = b.y + b.speed_y;
         
+        // Ball
 		oamSet(&oamMain, //main graphics engine context
 			0,           //oam index (0 to 127)  
 			b.x, b.y,   //x and y pixle location of the sprite
@@ -114,6 +123,7 @@ int main(void) {
 			false	//apply mosaic
 			);              
 		
+        // Left paddle
 		oamSet(&oamMain, //main graphics engine context
 			1,           //oam index (0 to 127)  
 			p1.x, p1.y,   //x and y pixle location of the sprite
@@ -122,6 +132,22 @@ int main(void) {
 			SpriteSize_8x32,     
 			SpriteColorFormat_256Color, 
 			gfx_p1,                  //pointer to the loaded graphics
+			-1,                  //sprite rotation data  
+			false,               //double the size when rotating?
+			false,			//hide the sprite?
+			false, false, //vflip, hflip
+			false	//apply mosaic
+			);
+
+        // Right paddle
+		oamSet(&oamMain, //main graphics engine context
+			2,           //oam index (0 to 127)  
+			p2.x, p2.y,   //x and y pixle location of the sprite
+			0,                    //priority, lower renders last (on top)
+			0,					  //this is the palette index if multiple palettes or the alpha value if bmp sprite	
+			SpriteSize_8x32,     
+			SpriteColorFormat_256Color, 
+			gfx_p2,                  //pointer to the loaded graphics
 			-1,                  //sprite rotation data  
 			false,               //double the size when rotating?
 			false,			//hide the sprite?
