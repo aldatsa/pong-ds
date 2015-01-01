@@ -134,7 +134,7 @@ int main(void) {
         } else {
             
             // If the paddle controlled by the CPU is above the center of the screen
-            if (p1.y > SCREEN_HEIGHT / 2 - 1 - p1.height) {
+            if (p1.y > SCREEN_HEIGHT / 2 - 1 - p1.height / 2) {
                 
                 // Move the paddle controlled byt the CPU down
                 p1.y = p1.y - 1;
