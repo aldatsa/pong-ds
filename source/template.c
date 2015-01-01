@@ -96,10 +96,35 @@ int main(void) {
 			touchRead(&touch);
 		}
         
+        // Artificial intelligence for the paddle controlled by the CPU
+        // If the ball is above the paddle
+        if (b.y < p1.y) {
+            
+            // Don't let the paddle move above the top of the screen
+            if (p1.y > 0 && p1.y) {
+                
+                // Move the paddle up
+                p1.y = p1.y - 1;
+                
+            }
+            
+        // If the ball is below the paddle    
+        } else {
+            
+            // Don't let the paddle move below the bottom of the screen
+            if (p1.y < SCREEN_HEIGHT - p1.height) {
+                
+                // Move the paddle down
+                p1.y = p1.y + 1;
+                
+            }
+            
+        }
+        
         // If the player is using the up button
         if (keys_held & KEY_UP) {
             
-            // Limit the movement of the paddle to the top of the screen
+            // Don't let the paddle move above the top of the screen
             if (p2.y > 0 && p2.y) {
                 
                 // Move the right paddle up
@@ -110,7 +135,7 @@ int main(void) {
         // Else if the player is using the down button
         } else if (keys_held & KEY_DOWN) {
             
-            // Limit the movement of the paddle to the bottom of the screen
+            // Don't let the paddle move below the bottom of the screen
             if (p2.y < SCREEN_HEIGHT - p2.height) {
                 
                 // Move the right paddle down
