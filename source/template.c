@@ -22,20 +22,20 @@ int main(void) {
     int keys_pressed, keys_held, keys_released;
     
     typedef struct {
-       unsigned char x;
-       unsigned char y;
-       char speed_x;
-       char speed_y;
-       unsigned char height;
-       unsigned char width;
+       int x;
+       int y;
+       int speed_x;
+       int speed_y;
+       int height;
+       int width;
     } ball;
 
     typedef struct {
-        unsigned char x;
-        unsigned char y;
-        char speed;
-        unsigned char height;
-        unsigned char width;
+        int x;
+        int y;
+        int speed;
+        int height;
+        int width;
     } paddle;
     
     // Ball
