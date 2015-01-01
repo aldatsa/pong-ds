@@ -95,11 +95,19 @@ int main(void) {
 		if(keysHeld() & KEY_TOUCH) {
 			touchRead(&touch);
 		}
-
-        if (keys_pressed & KEY_UP) {
-            b.y = b.y - 1;
-        } else if (keys_pressed & KEY_DOWN) {
-            b.y = b.y + 1;
+        
+        // If the player is using the up button
+        if (keys_held & KEY_UP) {
+            
+            // Move the right paddle up
+            p2.y = p2.y - 1;
+            
+        // Else if the player is using the down button
+        } else if (keys_held & KEY_DOWN) {
+            
+            // Move the right paddle down
+            p2.y = p2.y + 1;
+            
         }
         
         // Bottom and top borders of the screen
