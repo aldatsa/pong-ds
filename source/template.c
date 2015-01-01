@@ -1,7 +1,9 @@
 /*---------------------------------------------------------------------------------
 
-Simple sprite demo
--- dovoto
+PongDS - Simple Pong-like game for the Nintendo DS
+
+Author: Asier Iturralde Sarasola
+License: GPL v3
 
 ---------------------------------------------------------------------------------*/
 #include <nds.h>
@@ -9,8 +11,6 @@ Simple sprite demo
 #include <stdlib.h>
 #include <unistd.h>
 #include <math.h>
-
-#define PI 3.14159265
 
 //---------------------------------------------------------------------------------
 int main(void) {
@@ -37,20 +37,28 @@ int main(void) {
         unsigned char width;
     } paddle;
     
+    // Ball
     ball b = {SCREEN_WIDTH / 2 - 1 - 4, SCREEN_HEIGHT / 2 - 1 - 4, 1, 1, 8, 8};
     
+    // Left paddle
     paddle p1 = {0, SCREEN_HEIGHT / 2 - 1 - 16, 1, 32, 8};
+    
+    // Rigth paddle
     paddle p2 = {SCREEN_WIDTH - 8, SCREEN_HEIGHT / 2 - 1 - 16, 1, 32, 8};
     
 	videoSetMode(MODE_0_2D);
-	videoSetModeSub(MODE_0_2D);
+    videoSetModeSub(MODE_0_2D);
 
 	vramSetBankA(VRAM_A_MAIN_SPRITE);
 	vramSetBankD(VRAM_D_SUB_SPRITE);
-
+    
+    // Initialize the 2D sprite engine of the main (top) screen
 	oamInit(&oamMain, SpriteMapping_1D_32, false);
-	oamInit(&oamSub, SpriteMapping_1D_32, false);
-
+	
+    // Initialize the 2D sprite engine of the sub (bottom) screen
+    oamInit(&oamSub, SpriteMapping_1D_32, false);
+    
+    // Allocate graphics memory for the sprites of the ball and the paddles
 	u16* gfx = oamAllocateGfx(&oamMain, SpriteSize_8x8, SpriteColorFormat_256Color);
     u16* gfx_p1 = oamAllocateGfx(&oamMain, SpriteSize_8x32, SpriteColorFormat_256Color);
     u16* gfx_p2 = oamAllocateGfx(&oamMain, SpriteSize_8x32, SpriteColorFormat_256Color);
