@@ -23,11 +23,11 @@ int main(void) {
     typedef struct {
        unsigned char x;
        unsigned char y;
-       unsigned char speed;
-       double angle;
+       unsigned char speed_x;
+       unsigned char speed_y;
     } ball;
     
-    ball b = {SCREEN_WIDTH / 2 - 1 - 4, SCREEN_HEIGHT / 2 - 1 - 4, 1, 45.0};
+    ball b = {SCREEN_WIDTH / 2 - 1 - 4, SCREEN_HEIGHT / 2 - 1 - 4, 1, 1};
     
 	videoSetMode(MODE_0_2D);
 	videoSetModeSub(MODE_0_2D);
@@ -68,8 +68,13 @@ int main(void) {
             b.y = b.y + 1;
         }
         
-        b.x = b.x + (unsigned char) round(b.speed * cos(b.angle * PI / 180.0));
-        b.y = b.y + (unsigned char) round(b.speed * sin(b.angle * PI / 180.0));
+        // Bottom and top borders of the screen
+        if (b.x == 0 || b.x == SCREEN_HEIGHT - 1 - 8) {
+            b.speed_y = -1 * b.speed_y;
+        }
+        
+        b.x = b.x + b.speed_x;
+        b.y = b.y + b.speed_y;
         
 		oamSet(&oamMain, //main graphics engine context
 			0,           //oam index (0 to 127)  
