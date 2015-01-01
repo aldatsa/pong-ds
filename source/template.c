@@ -69,8 +69,13 @@ int main(void) {
         }
         
         // Bottom and top borders of the screen
-        if (b.x == 0 || b.x == SCREEN_HEIGHT - 1 - 8) {
+        if (b.y == 0 || b.y == SCREEN_HEIGHT - 1 - 8) {
             b.speed_y = -1 * b.speed_y;
+        }
+        
+        // Left and right borders of the screen
+        if (b.x == 0 || b.x == SCREEN_WIDTH - 1 - 8) {
+            b.speed_x = -1 * b.speed_x;
         }
         
         b.x = b.x + b.speed_x;
