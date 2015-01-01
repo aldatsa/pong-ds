@@ -23,8 +23,8 @@ int main(void) {
     typedef struct {
        unsigned char x;
        unsigned char y;
-       unsigned char speed_x;
-       unsigned char speed_y;
+       char speed_x;
+       char speed_y;
        unsigned char height;
        unsigned char width;
     } ball;
