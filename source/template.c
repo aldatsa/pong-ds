@@ -17,8 +17,12 @@ int main(void) {
     
     int keys_pressed, keys_held, keys_released;
     
-    unsigned char ball_x = SCREEN_WIDTH / 2 - 1 - 4;
-    unsigned char ball_y = SCREEN_HEIGHT / 2 - 1 - 4;
+    typedef struct {
+       unsigned char x;
+       unsigned char y;
+    } ball;
+    
+    ball b = {SCREEN_WIDTH / 2 - 1 - 4, SCREEN_HEIGHT / 2 - 1 - 4};
     
 	videoSetMode(MODE_0_2D);
 	videoSetModeSub(MODE_0_2D);
@@ -54,14 +58,14 @@ int main(void) {
 		}
 
         if (keys_pressed & KEY_UP) {
-            ball_y = ball_y - 1;
+            b.y = b.y - 1;
         } else if (keys_pressed & KEY_DOWN) {
-            ball_y = ball_y + 1;
+            b.y = b.y + 1;
         }
         
 		oamSet(&oamMain, //main graphics engine context
 			0,           //oam index (0 to 127)  
-			ball_x, ball_y,   //x and y pixle location of the sprite
+			b.x, b.y,   //x and y pixle location of the sprite
 			0,                    //priority, lower renders last (on top)
 			0,					  //this is the palette index if multiple palettes or the alpha value if bmp sprite	
 			SpriteSize_16x16,     
