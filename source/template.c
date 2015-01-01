@@ -99,14 +99,24 @@ int main(void) {
         // If the player is using the up button
         if (keys_held & KEY_UP) {
             
-            // Move the right paddle up
-            p2.y = p2.y - 1;
+            // Limit the movement of the paddle to the top of the screen
+            if (p2.y > 0 && p2.y) {
+                
+                // Move the right paddle up
+                p2.y = p2.y - 1;
+                
+            }
             
         // Else if the player is using the down button
         } else if (keys_held & KEY_DOWN) {
             
-            // Move the right paddle down
-            p2.y = p2.y + 1;
+            // Limit the movement of the paddle to the bottom of the screen
+            if (p2.y < SCREEN_HEIGHT - p2.height) {
+                
+                // Move the right paddle down
+                p2.y = p2.y + 1;
+                
+            }
             
         }
         
