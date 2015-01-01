@@ -48,28 +48,28 @@ int main(void) {
     paddle p2 = {SCREEN_WIDTH - 8, SCREEN_HEIGHT / 2 - 1 - 16, 1, 32, 8};
     
 	videoSetMode(MODE_0_2D);
-    videoSetModeSub(MODE_0_2D);
+    //videoSetModeSub(MODE_0_2D);
 
 	vramSetBankA(VRAM_A_MAIN_SPRITE);
-	vramSetBankD(VRAM_D_SUB_SPRITE);
+	//vramSetBankD(VRAM_D_SUB_SPRITE);
     
     // Initialize the 2D sprite engine of the main (top) screen
 	oamInit(&oamMain, SpriteMapping_1D_32, false);
 	
     // Initialize the 2D sprite engine of the sub (bottom) screen
-    oamInit(&oamSub, SpriteMapping_1D_32, false);
+    //oamInit(&oamSub, SpriteMapping_1D_32, false);
     
     // Allocate graphics memory for the sprites of the ball and the paddles
 	u16* gfx = oamAllocateGfx(&oamMain, SpriteSize_8x8, SpriteColorFormat_256Color);
     u16* gfx_p1 = oamAllocateGfx(&oamMain, SpriteSize_8x32, SpriteColorFormat_256Color);
     u16* gfx_p2 = oamAllocateGfx(&oamMain, SpriteSize_8x32, SpriteColorFormat_256Color);
     
-	u16* gfxSub = oamAllocateGfx(&oamSub, SpriteSize_16x16, SpriteColorFormat_256Color);
+	//u16* gfxSub = oamAllocateGfx(&oamSub, SpriteSize_16x16, SpriteColorFormat_256Color);
 
 	for(i = 0; i < b.height * b.width / 2; i++)
 	{
 		gfx[i] = 1 | (1 << 8);
-		gfxSub[i] = 1 | (1 << 8);
+		//gfxSub[i] = 1 | (1 << 8);
 	}
 
     for(i = 0; i < p1.height * p1.width / 2; i++)
@@ -83,8 +83,12 @@ int main(void) {
 	}
     
 	SPRITE_PALETTE[1] = RGB15(31,31,31);    // White
-	SPRITE_PALETTE_SUB[1] = RGB15(0,31,0);
+	//SPRITE_PALETTE_SUB[1] = RGB15(0,31,0);
 
+    consoleDemoInit();
+    
+    iprintf("PongDS\n");
+    
 	while(1) {
         
 		scanKeys();
@@ -192,6 +196,9 @@ int main(void) {
         b.x = b.x + b.speed_x;
         b.y = b.y + b.speed_y;
         
+        iprintf("\x1b[10;0Hspeed_x = %d",b.speed_x);
+        iprintf("\x1b[11;0Hspeed_y = %d",b.speed_y);
+        
         // Set the oam entry for the ball
 		oamSet(&oamMain, //main graphics engine context
 			0,           //oam index (0 to 127)  
@@ -240,7 +247,7 @@ int main(void) {
 			false	//apply mosaic
 			);
         
-		oamSet(&oamSub, 
+		/*oamSet(&oamSub, 
 			0, 
 			touch.px, 
 			touch.py, 
@@ -254,14 +261,14 @@ int main(void) {
 			false,			
 			false, false, 
 			false	
-			);              
-            
+			);*/
+        
         // Wait for a vertical blank interrupt
 		swiWaitForVBlank();
         
 		// Update the oam memories of the main and sub screens
 		oamUpdate(&oamMain);
-		oamUpdate(&oamSub);
+		//oamUpdate(&oamSub);
 	}
 
 	return 0;
