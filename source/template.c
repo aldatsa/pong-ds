@@ -25,9 +25,11 @@ int main(void) {
        unsigned char y;
        unsigned char speed_x;
        unsigned char speed_y;
+       unsigned char height;
+       unsigned char width;
     } ball;
     
-    ball b = {SCREEN_WIDTH / 2 - 1 - 4, SCREEN_HEIGHT / 2 - 1 - 4, 1, 1};
+    ball b = {SCREEN_WIDTH / 2 - 1 - 4, SCREEN_HEIGHT / 2 - 1 - 4, 1, 1, 8, 8};
     
 	videoSetMode(MODE_0_2D);
 	videoSetModeSub(MODE_0_2D);
@@ -38,10 +40,10 @@ int main(void) {
 	oamInit(&oamMain, SpriteMapping_1D_32, false);
 	oamInit(&oamSub, SpriteMapping_1D_32, false);
 
-	u16* gfx = oamAllocateGfx(&oamMain, SpriteSize_16x16, SpriteColorFormat_256Color);
+	u16* gfx = oamAllocateGfx(&oamMain, SpriteSize_8x8, SpriteColorFormat_256Color);
 	u16* gfxSub = oamAllocateGfx(&oamSub, SpriteSize_16x16, SpriteColorFormat_256Color);
 
-	for(i = 0; i < 16 * 16 / 2; i++)
+	for(i = 0; i < b.height * b.width / 2; i++)
 	{
 		gfx[i] = 1 | (1 << 8);
 		gfxSub[i] = 1 | (1 << 8);
@@ -69,12 +71,12 @@ int main(void) {
         }
         
         // Bottom and top borders of the screen
-        if (b.y == 0 || b.y == SCREEN_HEIGHT - 1 - 8) {
+        if (b.y == 0 || b.y == SCREEN_HEIGHT - 1 - b.height) {
             b.speed_y = -1 * b.speed_y;
         }
         
         // Left and right borders of the screen
-        if (b.x == 0 || b.x == SCREEN_WIDTH - 1 - 8) {
+        if (b.x == 0 || b.x == SCREEN_WIDTH - 1 - b.width) {
             b.speed_x = -1 * b.speed_x;
         }
         
@@ -86,7 +88,7 @@ int main(void) {
 			b.x, b.y,   //x and y pixle location of the sprite
 			0,                    //priority, lower renders last (on top)
 			0,					  //this is the palette index if multiple palettes or the alpha value if bmp sprite	
-			SpriteSize_16x16,     
+			SpriteSize_8x8,     
 			SpriteColorFormat_256Color, 
 			gfx,                  //pointer to the loaded graphics
 			-1,                  //sprite rotation data  
