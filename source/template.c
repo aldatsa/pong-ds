@@ -98,28 +98,50 @@ int main(void) {
 		}
         
         // Artificial intelligence for the paddle controlled by the CPU
-        // If the ball is above the paddle
-        if (b.y < p1.y) {
+        //
+        // If the ball is moving towards the paddle controlled by the CPU
+        if (b.speed_x < 0) {
             
-            // Don't let the paddle move above the top of the screen
-            if (p1.y > 0 && p1.y) {
+            // If the ball is above the paddle
+            if (b.y < p1.y) {
                 
-                // Move the paddle up
-                p1.y = p1.y - 1;
+                // Don't let the paddle move above the top of the screen
+                if (p1.y > 0) {
+                    
+                    // Move the paddle up
+                    p1.y = p1.y - 1;
+                    
+                }
+                
+            // If the ball is below the paddle    
+            } else {
+                
+                // Don't let the paddle move below the bottom of the screen
+                if (p1.y < SCREEN_HEIGHT - p1.height) {
+                    
+                    // Move the paddle down
+                    p1.y = p1.y + 1;
+                    
+                }
                 
             }
             
-        // If the ball is below the paddle    
+        // If the ball is moving towards the paddle controlled by the user    
         } else {
             
-            // Don't let the paddle move below the bottom of the screen
-            if (p1.y < SCREEN_HEIGHT - p1.height) {
+            // If the paddle controlled by the CPU is above the center of the screen
+            if (p1.y > SCREEN_HEIGHT / 2 - 1 - p1.height) {
                 
-                // Move the paddle down
+                // Move the paddle controlled byt the CPU down
+                p1.y = p1.y - 1;
+                
+            // If the paddle controlled by the CPU is below the center of the screen
+            } else {
+                
+                // Move the paddle controlled by the CPU up
                 p1.y = p1.y + 1;
                 
             }
-            
         }
         
         // If the player is holding the up button
