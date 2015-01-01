@@ -8,6 +8,9 @@ Simple sprite demo
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <math.h>
+
+#define PI 3.14159265
 
 //---------------------------------------------------------------------------------
 int main(void) {
@@ -20,9 +23,11 @@ int main(void) {
     typedef struct {
        unsigned char x;
        unsigned char y;
+       unsigned char speed;
+       double angle;
     } ball;
     
-    ball b = {SCREEN_WIDTH / 2 - 1 - 4, SCREEN_HEIGHT / 2 - 1 - 4};
+    ball b = {SCREEN_WIDTH / 2 - 1 - 4, SCREEN_HEIGHT / 2 - 1 - 4, 1, 45.0};
     
 	videoSetMode(MODE_0_2D);
 	videoSetModeSub(MODE_0_2D);
@@ -62,6 +67,9 @@ int main(void) {
         } else if (keys_pressed & KEY_DOWN) {
             b.y = b.y + 1;
         }
+        
+        b.x = b.x + (unsigned char) round(b.speed * cos(b.angle * PI / 180.0));
+        b.y = b.y + (unsigned char) round(b.speed * sin(b.angle * PI / 180.0));
         
 		oamSet(&oamMain, //main graphics engine context
 			0,           //oam index (0 to 127)  
