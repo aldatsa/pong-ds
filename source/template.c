@@ -6,6 +6,7 @@ Author: Asier Iturralde Sarasola
 License: GPL v3
 
 ---------------------------------------------------------------------------------*/
+
 #include <nds.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -121,7 +122,7 @@ int main(void) {
             
         }
         
-        // If the player is using the up button
+        // If the player is holding the up button
         if (keys_held & KEY_UP) {
             
             // Don't let the paddle move above the top of the screen
@@ -132,7 +133,7 @@ int main(void) {
                 
             }
             
-        // Else if the player is using the down button
+        // Else if the player is holding the down button
         } else if (keys_held & KEY_DOWN) {
             
             // Don't let the paddle move below the bottom of the screen
@@ -165,10 +166,11 @@ int main(void) {
             b.speed_x = -1 * b.speed_x;
         }
         
+        // Update the position of the ball
         b.x = b.x + b.speed_x;
         b.y = b.y + b.speed_y;
         
-        // Ball
+        // Set the oam entry for the ball
 		oamSet(&oamMain, //main graphics engine context
 			0,           //oam index (0 to 127)  
 			b.x, b.y,   //x and y pixle location of the sprite
@@ -184,7 +186,7 @@ int main(void) {
 			false	//apply mosaic
 			);              
 		
-        // Left paddle
+        // Set the oam entry for the left paddle
 		oamSet(&oamMain, //main graphics engine context
 			1,           //oam index (0 to 127)  
 			p1.x, p1.y,   //x and y pixle location of the sprite
@@ -200,7 +202,7 @@ int main(void) {
 			false	//apply mosaic
 			);
 
-        // Right paddle
+        // Set the oam entry for the right paddle
 		oamSet(&oamMain, //main graphics engine context
 			2,           //oam index (0 to 127)  
 			p2.x, p2.y,   //x and y pixle location of the sprite
@@ -231,10 +233,11 @@ int main(void) {
 			false, false, 
 			false	
 			);              
-	
+            
+        // Wait for a vertical blank interrupt
 		swiWaitForVBlank();
-
-		
+        
+		// Update the oam memories of the main and sub screens
 		oamUpdate(&oamMain);
 		oamUpdate(&oamSub);
 	}
