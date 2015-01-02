@@ -203,12 +203,12 @@ int main(void) {
         }
         
         // Left paddle collision detection
-        if (b.x == p1.x + p1.width && b.y > p1.y - b.height + 1 && b.y < p1.y + p1.height + p1.height - 1) {
+        if (b.x == p1.x + p1.width && b.y > p1.y - b.height && b.y < p1.y + p1.height + b.height) {
             b.speed_x = -1 * b.speed_x;
         }
         
         // Right paddle collision detection
-        if (b.x == p2.x - p2.width && b.y > p2.y - b.height + 1 && b.y < p2.y + p2.height + p2.height - 1) {
+        if (b.x == p2.x - p2.width && b.y > p2.y - b.height && b.y < p2.y + p2.height + b.height) {
             b.speed_x = -1 * b.speed_x;
         }
         
