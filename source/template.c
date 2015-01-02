@@ -36,16 +36,17 @@ int main(void) {
         int speed;
         int height;
         int width;
+        int score;
     } paddle;
     
     // Ball
     ball b = {SCREEN_WIDTH / 2 - 1 - 4, SCREEN_HEIGHT / 2 - 1 - 4, 1, 1, 8, 8};
     
     // Left paddle
-    paddle p1 = {0, SCREEN_HEIGHT / 2 - 1 - 16, 1, 32, 8};
+    paddle p1 = {0, SCREEN_HEIGHT / 2 - 1 - 16, 1, 32, 8, 0};
     
     // Rigth paddle
-    paddle p2 = {SCREEN_WIDTH - 8, SCREEN_HEIGHT / 2 - 1 - 16, 1, 32, 8};
+    paddle p2 = {SCREEN_WIDTH - 8, SCREEN_HEIGHT / 2 - 1 - 16, 1, 32, 8, 0};
     
 	videoSetMode(MODE_0_2D);
     //videoSetModeSub(MODE_0_2D);
@@ -177,18 +178,37 @@ int main(void) {
             b.speed_y = -1 * b.speed_y;
         }
         
-        // Left and right borders of the screen
-        if (b.x == 0 || b.x == SCREEN_WIDTH - 1 - b.width) {
-            b.speed_x = -1 * b.speed_x;
+        // Left border of the screen
+        if (b.x == -1 * p1.width) {
+            
+            p2.score = p2.score + 1;
+            
+            b.x = SCREEN_WIDTH / 2 - 1 - b.width / 2;
+            b.y = SCREEN_HEIGHT / 2 - 1 - b.height / 2;
+            b.speed_x = 1;
+            b.speed_y = 1;
+            
+        }
+        
+        // Right border of the screen
+        if (b.x == SCREEN_WIDTH - 1) {
+            
+            p1.score = p1.score + 1;
+            
+            b.x = SCREEN_WIDTH / 2 - 1 - b.width / 2;
+            b.y = SCREEN_HEIGHT / 2 - 1 - b.height / 2;
+            b.speed_x = -1;
+            b.speed_y = 1;
+            
         }
         
         // Left paddle collision detection
-        if (b.x == p1.x + p1.width && b.y > p1.y && b.y < p1.y + p1.height) {
+        if (b.x == p1.x + p1.width && b.y > p1.y - b.height + 1 && b.y < p1.y + p1.height + p1.height - 1) {
             b.speed_x = -1 * b.speed_x;
         }
         
         // Right paddle collision detection
-        if (b.x == p2.x - p2.width && b.y > p2.y && b.y < p2.y + p2.height) {
+        if (b.x == p2.x - p2.width && b.y > p2.y - b.height + 1 && b.y < p2.y + p2.height + p2.height - 1) {
             b.speed_x = -1 * b.speed_x;
         }
         
@@ -196,8 +216,8 @@ int main(void) {
         b.x = b.x + b.speed_x;
         b.y = b.y + b.speed_y;
         
-        iprintf("\x1b[10;0Hspeed_x = %d",b.speed_x);
-        iprintf("\x1b[11;0Hspeed_y = %d",b.speed_y);
+        iprintf("\x1b[10;0HCPU: %d", p1.score);
+        iprintf("\x1b[11;0HPlayer: %d", p2.score);
         
         // Set the oam entry for the ball
 		oamSet(&oamMain, //main graphics engine context
