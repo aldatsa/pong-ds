@@ -8,10 +8,14 @@ License: GPL v3
 ---------------------------------------------------------------------------------*/
 
 #include <nds.h>
+#include <maxmod9.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <math.h>
+
+#include "soundbank.h"
+#include "soundbank_bin.h"
 
 //---------------------------------------------------------------------------------
 int main(void) {
@@ -88,6 +92,37 @@ int main(void) {
 
     consoleDemoInit();
     
+    mmInitDefaultMem((mm_addr)soundbank_bin);
+	
+	// load the module
+	mmLoad( MOD_FLATOUTLIES );
+
+	// load sound effects
+	mmLoadEffect( SFX_AMBULANCE );
+	mmLoadEffect( SFX_BOOM );
+
+	// Start playing module
+	mmStart( MOD_FLATOUTLIES, MM_PLAY_LOOP );
+
+	mm_sound_effect ambulance = {
+		{ SFX_AMBULANCE } ,			// id
+		(int)(1.0f * (1<<10)),	// rate
+		0,		// handle
+		255,	// volume
+		0,		// panning
+	};
+
+	mm_sound_effect boom = {
+		{ SFX_BOOM } ,			// id
+		(int)(1.0f * (1<<10)),	// rate
+		0,		// handle
+		255,	// volume
+		255,	// panning
+	};
+    
+    // sound effect handle (for cancelling it later)
+	mm_sfxhand amb = 0;
+    
     iprintf("PongDS\n");
     
 	while(1) {
@@ -100,6 +135,21 @@ int main(void) {
         
 		if(keysHeld() & KEY_TOUCH) {
 			touchRead(&touch);
+		}
+        
+        // Play looping ambulance sound effect out of left speaker if A button is pressed
+		if ( keys_pressed & KEY_A ) {
+			amb = mmEffectEx(&ambulance);
+		}
+
+		// stop ambulance sound when A button is released
+		if ( keys_released & KEY_A ) {
+			mmEffectCancel(amb);
+		}
+
+		// Play explosion sound effect out of right speaker if B button is pressed
+		if ( keys_pressed & KEY_B ) {
+			mmEffectEx(&boom);
 		}
         
         // Artificial intelligence for the paddle controlled by the CPU

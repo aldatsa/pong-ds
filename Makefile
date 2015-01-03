@@ -13,7 +13,8 @@ include $(DEVKITARM)/ds_rules
 # BUILD is the directory where object files & intermediate files will be placed
 # SOURCES is a list of directories containing source code
 # INCLUDES is a list of directories containing extra header files
-# MAXMOD_SOUNDBANK contains a directory of music and sound effect files
+# DATA is a list of directories containing binary data
+# MAXMOD_DATA contains a directory of music and sound effect files
 #---------------------------------------------------------------------------------
 TARGET		:=	$(shell basename $(CURDIR))
 BUILD		:=	build
@@ -21,6 +22,7 @@ SOURCES		:=	source
 DATA		:=	data  
 INCLUDES	:=	include
 SPRITES		:=  sprites
+MUSIC       :=  maxmod_data
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -40,8 +42,10 @@ LDFLAGS	=	-specs=ds_arm9.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project (order is important)
+# lmm9: maxmod9
+# lm: math
 #---------------------------------------------------------------------------------
-LIBS	:= 	-lnds9 -lm
+LIBS	:= -lmm9 -lnds9 -lm
  
  
 #---------------------------------------------------------------------------------
@@ -68,8 +72,10 @@ export DEPSDIR	:=	$(CURDIR)/$(BUILD)
 CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
 CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
-BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
+BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*))) soundbank.bin
 SPRITE_FILES   :=  $(foreach dir, $(SPRITES),$(notdir $(wildcard $(dir)/*.png)))
+
+export AUDIOFILES	:=	$(foreach dir,$(notdir $(wildcard $(MUSIC)/*.*)),$(CURDIR)/$(MUSIC)/$(dir))
 
 #---------------------------------------------------------------------------------
 # use CXX for linking C++ projects, CC for standard C
@@ -85,14 +91,14 @@ else
 endif
 #---------------------------------------------------------------------------------
 
-export OFILES	:=	$(SPRITE_FILES:.png=.o) \
-				$(addsuffix .o,$(BINFILES)) \
-			$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
+export OFILES	:=	$(addsuffix .o,$(BINFILES)) \
+					$(SPRITE_FILES:.png=.o) \
+					$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
  
 export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
-			$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
-			$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
-			-I$(CURDIR)/$(BUILD)
+					$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
+					$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
+					-I$(CURDIR)/$(BUILD)
  
 export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
  
@@ -118,11 +124,25 @@ $(OUTPUT).nds	: 	$(OUTPUT).elf
 $(OUTPUT).elf	:	$(OFILES)
 
 #---------------------------------------------------------------------------------
+# The bin2o rule should be copied and modified
+# for each extension used in the data directories
+#---------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------
+# rule to build soundbank from music files
+#---------------------------------------------------------------------------------
+soundbank.bin : $(AUDIOFILES)
+#---------------------------------------------------------------------------------
+	@mmutil $^ -d -osoundbank.bin -hsoundbank.h
+
+#---------------------------------------------------------------------------------
 %.s %.h : %.png
 	grit $< -ff../sprites/sprite.grit -o$*
 #---------------------------------------------------------------------------------
 
 	
+#---------------------------------------------------------------------------------
+# This rule links in binary data with the .bin extension
 #---------------------------------------------------------------------------------
 %.bin.o	:	%.bin
 #---------------------------------------------------------------------------------
