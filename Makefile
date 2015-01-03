@@ -22,7 +22,7 @@ SOURCES		:=	source
 DATA		:=	data  
 INCLUDES	:=	include
 GRAPHICS	:=  gfx
-MUSIC       :=  maxmod_data
+MUSIC       :=  sfx
 
 #---------------------------------------------------------------------------------
 # options for code generation
