@@ -20,32 +20,18 @@ License: GPL v3
 #include "background.h"
 #include <digits.h>
 
-//---------------------------------------------------------------------
-// The digit sprite
-// it needs a single pointer to sprite memory
-// and a reference to its frame graphics so they
-// can be loaded as needed
-//---------------------------------------------------------------------
-typedef struct {
-	int x;
-	int y;
-
-	u16* sprite_gfx_mem[12];
-	u8*  frame_gfx;
-
-	int state;
-	int anim_frame;
-} Digit;
+// The digit sprites
+u16* sprite_gfx_mem[12];
 
 //---------------------------------------------------------------------
 // Load all the digits into memory
 //---------------------------------------------------------------------
-void initDigits(Digit *sprite, u8* gfx) {
+void initDigits(u8* gfx) {
 	int i;
 
 	for(i = 0; i < 12; i++) {
-		sprite->sprite_gfx_mem[i] = oamAllocateGfx(&oamMain, SpriteSize_32x32, SpriteColorFormat_256Color);
-		dmaCopy(gfx, sprite->sprite_gfx_mem[i], 32*32);
+		sprite_gfx_mem[i] = oamAllocateGfx(&oamMain, SpriteSize_32x32, SpriteColorFormat_256Color);
+		dmaCopy(gfx, sprite_gfx_mem[i], 32*32);
 		gfx += 32*32;
 	}
 }
@@ -85,8 +71,6 @@ int main(void) {
     // Rigth paddle
     paddle p2 = {SCREEN_WIDTH - 8, SCREEN_HEIGHT / 2 - 1 - 16, 1, 32, 8, 0};
     
-    Digit score_p1 = {100, 100};
-    
 	videoSetMode(MODE_5_2D);
     //videoSetModeSub(MODE_0_2D);
     
@@ -103,7 +87,7 @@ int main(void) {
     // Initialize the 2D sprite engine of the main (top) screen
 	oamInit(&oamMain, SpriteMapping_1D_128, false);
 	
-    initDigits(&score_p1, (u8*)digitsTiles);
+    initDigits((u8*)digitsTiles);
     
     dmaCopy(digitsPal, SPRITE_PALETTE, 512);
     
@@ -363,15 +347,16 @@ int main(void) {
 			false	//apply mosaic
 			);
         
+        // Set the oam entry for the score of the first player
         oamSet(&oamMain,                    // main graphics engine context
                3,                           // oam index (0 to 127)
-               score_p1.x,                  // x location of the sprite
-               score_p1.y,                  // y location of the sprite
+               SCREEN_WIDTH / 2 - 40,       // x location of the sprite
+               8,                           // y location of the sprite
                0,                           // priority, lower renders last (on top)
                0,                           // this is the palette index if multiple palettes or the alpha value if bmp sprite
                SpriteSize_32x32,
                SpriteColorFormat_256Color,
-               score_p1.sprite_gfx_mem[0],  // pointer to the loaded graphics
+               sprite_gfx_mem[p1.score],    // pointer to the loaded graphics
                -1,                          // sprite rotation data
                false,                       // double the size when rotating?
                false,                       // hide the sprite?
