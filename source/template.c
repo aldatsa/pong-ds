@@ -17,6 +17,8 @@ License: GPL v3
 #include "soundbank.h"
 #include "soundbank_bin.h"
 
+#include "drunkenlogo.h"
+
 //---------------------------------------------------------------------------------
 int main(void) {
 	//---------------------------------------------------------------------------------
@@ -52,11 +54,17 @@ int main(void) {
     // Rigth paddle
     paddle p2 = {SCREEN_WIDTH - 8, SCREEN_HEIGHT / 2 - 1 - 16, 1, 32, 8, 0};
     
-	videoSetMode(MODE_0_2D);
+	videoSetMode(MODE_5_2D);
     //videoSetModeSub(MODE_0_2D);
 
-	vramSetBankA(VRAM_A_MAIN_SPRITE);
+	//vramSetBankA(VRAM_A_MAIN_SPRITE);
+    vramSetBankA(VRAM_A_MAIN_BG);
 	//vramSetBankD(VRAM_D_SUB_SPRITE);
+    
+    // set up our bitmap background
+	bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
+	
+	decompress(drunkenlogoBitmap, BG_GFX,  LZ77Vram);
     
     // Initialize the 2D sprite engine of the main (top) screen
 	oamInit(&oamMain, SpriteMapping_1D_32, false);

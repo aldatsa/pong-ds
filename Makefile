@@ -12,9 +12,10 @@ include $(DEVKITARM)/ds_rules
 # TARGET is the name of the output
 # BUILD is the directory where object files & intermediate files will be placed
 # SOURCES is a list of directories containing source code
-# INCLUDES is a list of directories containing extra header files
 # DATA is a list of directories containing binary data
-# MAXMOD_DATA contains a directory of music and sound effect files
+# INCLUDES is a list of directories containing extra header files
+# GRAPHICS is a list of directories containing graphics files
+# MUSIC is a list of directories containing music and sound effect files
 #---------------------------------------------------------------------------------
 TARGET		:=	$(shell basename $(CURDIR))
 BUILD		:=	build
@@ -73,7 +74,7 @@ CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
 CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
 BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*))) soundbank.bin
-PNGFILES   :=  $(foreach dir, $(GRAPHICS),$(notdir $(wildcard $(dir)/*.png)))
+PNGFILES	:=	$(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.png)))
 
 export AUDIOFILES	:=	$(foreach dir,$(notdir $(wildcard $(MUSIC)/*.*)),$(CURDIR)/$(MUSIC)/$(dir))
 
@@ -116,7 +117,9 @@ clean:
 
 #---------------------------------------------------------------------------------
 else
- 
+
+DEPENDS	:=	$(OFILES:.o=.d)
+
 #---------------------------------------------------------------------------------
 # main targets
 #---------------------------------------------------------------------------------
@@ -124,9 +127,12 @@ $(OUTPUT).nds	: 	$(OUTPUT).elf
 $(OUTPUT).elf	:	$(OFILES)
 
 #---------------------------------------------------------------------------------
-# The bin2o rule should be copied and modified
-# for each extension used in the data directories
+# This rule links in binary data with the .bin extension
 #---------------------------------------------------------------------------------
+%.bin.o	:	%.bin
+#---------------------------------------------------------------------------------
+	@echo $(notdir $<)
+	@$(bin2o)
 
 #---------------------------------------------------------------------------------
 # rule to build soundbank from music files
@@ -136,20 +142,11 @@ soundbank.bin : $(AUDIOFILES)
 	@mmutil $^ -d -osoundbank.bin -hsoundbank.h
 
 #---------------------------------------------------------------------------------
-%.s %.h : %.png
-	grit $< -ff../sprites/sprite.grit -o$*
+%.s %.h : %.png %.grit
+	grit $< -fts -o$*
 #---------------------------------------------------------------------------------
-
-	
-#---------------------------------------------------------------------------------
-# This rule links in binary data with the .bin extension
-#---------------------------------------------------------------------------------
-%.bin.o	:	%.bin
-#---------------------------------------------------------------------------------
-	@echo $(notdir $<)
-	$(bin2o)
  
--include $(DEPSDIR)/*.d
+-include $(DEPENDS)
  
 #---------------------------------------------------------------------------------------
 endif
