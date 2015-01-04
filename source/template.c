@@ -18,6 +18,7 @@ License: GPL v3
 #include "soundbank_bin.h"
 
 #include "background.h"
+#include <digits.h>
 
 //---------------------------------------------------------------------------------
 int main(void) {
