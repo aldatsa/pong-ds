@@ -72,12 +72,9 @@ int main(void) {
     paddle p2 = {SCREEN_WIDTH - 8, SCREEN_HEIGHT / 2 - 1 - 16, 1, 32, 8, 0};
     
 	videoSetMode(MODE_5_2D);
-    //videoSetModeSub(MODE_0_2D);
     
     vramSetBankA(VRAM_A_MAIN_BG);
     vramSetBankB(VRAM_B_MAIN_SPRITE);
-    
-	//vramSetBankD(VRAM_D_SUB_SPRITE);
     
     // set up our bitmap background
 	bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
@@ -91,20 +88,14 @@ int main(void) {
     
     dmaCopy(digitsPal, SPRITE_PALETTE, 512);
     
-    // Initialize the 2D sprite engine of the sub (bottom) screen
-    //oamInit(&oamSub, SpriteMapping_1D_32, false);
-    
     // Allocate graphics memory for the sprites of the ball and the paddles
 	u16* gfx = oamAllocateGfx(&oamMain, SpriteSize_8x8, SpriteColorFormat_256Color);
     u16* gfx_p1 = oamAllocateGfx(&oamMain, SpriteSize_8x32, SpriteColorFormat_256Color);
     u16* gfx_p2 = oamAllocateGfx(&oamMain, SpriteSize_8x32, SpriteColorFormat_256Color);
-    
-	//u16* gfxSub = oamAllocateGfx(&oamSub, SpriteSize_16x16, SpriteColorFormat_256Color);
 
 	for(i = 0; i < b.height * b.width / 2; i++)
 	{
 		gfx[i] = 1 | (1 << 8);
-		//gfxSub[i] = 1 | (1 << 8);
 	}
 
     for(i = 0; i < p1.height * p1.width / 2; i++)
@@ -118,7 +109,6 @@ int main(void) {
 	}
     
 	SPRITE_PALETTE[1] = RGB15(31,31,31);    // White
-	//SPRITE_PALETTE_SUB[1] = RGB15(0,31,0);
 
     consoleDemoInit();
     
@@ -381,28 +371,11 @@ int main(void) {
                false,                       // hflip
                false);                      // apply mosaic
         
-		/*oamSet(&oamSub, 
-			0, 
-			touch.px, 
-			touch.py, 
-			0, 
-			0,
-			SpriteSize_16x16, 
-			SpriteColorFormat_256Color, 
-			gfxSub, 
-			-1, 
-			false, 
-			false,			
-			false, false, 
-			false	
-			);*/
-        
         // Wait for a vertical blank interrupt
 		swiWaitForVBlank();
         
-		// Update the oam memories of the main and sub screens
+		// Update the oam memories of the main screen
 		oamUpdate(&oamMain);
-		//oamUpdate(&oamSub);
 	}
 
 	return 0;
