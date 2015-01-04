@@ -17,7 +17,7 @@ License: GPL v3
 #include "soundbank.h"
 #include "soundbank_bin.h"
 
-#include "drunkenlogo.h"
+#include "background.h"
 
 //---------------------------------------------------------------------------------
 int main(void) {
@@ -64,7 +64,7 @@ int main(void) {
     // set up our bitmap background
 	bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
 	
-	decompress(drunkenlogoBitmap, BG_GFX,  LZ77Vram);
+	decompress(backgroundBitmap, BG_GFX,  LZ77Vram);
     
     // Initialize the 2D sprite engine of the main (top) screen
 	oamInit(&oamMain, SpriteMapping_1D_32, false);
