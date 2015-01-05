@@ -175,9 +175,11 @@ int main(void) {
 			mmEffectEx(&boom);
 		}
         
-        // Artificial intelligence for the paddle controlled by the CPU
-        //
+        // One player mode (VS CPU)
         if (!two_players_mode) {
+            
+            // Artificial intelligence for the paddle controlled by the CPU (only in one player mode)
+            
             // If the ball is moving towards the paddle controlled by the CPU
             if (b.speed_x < 0) {
                 
@@ -222,27 +224,77 @@ int main(void) {
                     
                 }
             }
-        }
-        
-        // If the player is holding the up button
-        if (keys_held & KEY_UP) {
             
-            // Don't let the paddle move above the top of the screen
-            if (p2.y > 0 && p2.y) {
+            // If the player is holding the up button
+            if (keys_held & KEY_UP) {
                 
-                // Move the right paddle up
-                p2.y = p2.y - 1;
+                // Don't let the paddle move above the top of the screen
+                if (p2.y > 0) {
+                    
+                    // Move the right paddle up
+                    p2.y = p2.y - 1;
+                    
+                }
+                
+            // Else if the player is holding the down button
+            } else if (keys_held & KEY_DOWN) {
+                
+                // Don't let the paddle move below the bottom of the screen
+                if (p2.y < SCREEN_HEIGHT - p2.height) {
+                    
+                    // Move the right paddle down
+                    p2.y = p2.y + 1;
+                    
+                }
                 
             }
             
-        // Else if the player is holding the down button
-        } else if (keys_held & KEY_DOWN) {
+        // Two players mode
+        } else {
             
-            // Don't let the paddle move below the bottom of the screen
-            if (p2.y < SCREEN_HEIGHT - p2.height) {
+            // If the first player is holding the up button
+            if (keys_held & KEY_UP) {
                 
-                // Move the right paddle down
-                p2.y = p2.y + 1;
+                // Don't let the paddle move above the top of the screen
+                if (p1.y > 0) {
+                    
+                    // Move the right paddle up
+                    p1.y = p1.y - 1;
+                    
+                }
+                
+            // Else if the first player is holding the down button
+            } else if (keys_held & KEY_DOWN) {
+                
+                // Don't let the paddle move below the bottom of the screen
+                if (p1.y < SCREEN_HEIGHT - p1.height) {
+                    
+                    // Move the right paddle down
+                    p1.y = p1.y + 1;
+                    
+                }
+                
+            }
+            
+            // If the second player is holding the X button
+            if (keys_held & KEY_X) {
+                
+                // Don't let the paddle move above the top of the screen
+                if (p2.y > 0) {
+                    
+                    p2.y = p2.y - 1;
+                    
+                }
+                
+            // Else if the second player is holding the B button
+            } else if (keys_held & KEY_B) {
+                
+                // Don't let the paddle move below the bottom of the screen
+                if (p2.y < SCREEN_HEIGHT - p2.height) {
+                    
+                    p2.y = p2.y + 1;
+                    
+                }
                 
             }
             
