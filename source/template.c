@@ -306,7 +306,7 @@ int main(void) {
         }
         
         // Left border of the screen
-        if (b.x == -1 * p1.width) {
+        if (b.x == 0) {
             
             p2.score = p2.score + 1;
             
