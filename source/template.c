@@ -20,6 +20,7 @@ License: GPL v3
 
 #include "background.h"
 #include <digits.h>
+#include <splash.h>
 #include <main_menu.h>
 
 // The digit sprites
@@ -84,7 +85,8 @@ int main(void) {
     
     // set up the bitmap background of the main screen (game field)
 	bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
-	decompress(backgroundBitmap, BG_GFX,  LZ77Vram);
+    decompress(splashBitmap, BG_GFX,  LZ77Vram);
+	//decompress(backgroundBitmap, BG_GFX,  LZ77Vram);
     
     // set up the bitmap background of the main menu on the sub screen
 	bgInitSub(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
