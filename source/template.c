@@ -83,10 +83,9 @@ int main(void) {
     vramSetBankB(VRAM_B_MAIN_SPRITE);
     vramSetBankC(VRAM_C_SUB_BG);
     
-    // set up the bitmap background of the main screen (game field)
+    // set up the bitmap background of the main screen (splash screen)
 	bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
     decompress(splashBitmap, BG_GFX,  LZ77Vram);
-	//decompress(backgroundBitmap, BG_GFX,  LZ77Vram);
     
     // set up the bitmap background of the main menu on the sub screen
 	bgInitSub(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
@@ -167,10 +166,18 @@ int main(void) {
             // The user selected one player mode
             if (touch.px >= 52 && touch.px <= 211 && touch.py >= 53 && touch.py <= 73) {
                 
+                // set up the bitmap background of the main screen (game field)
+                bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
+                decompress(backgroundBitmap, BG_GFX,  LZ77Vram);
+                
                 two_players_mode = false;
                 
             // The user selected two players mode
             } else if (touch.px >= 52 && touch.px <= 211 && touch.py >= 77 && touch.py <= 97) {
+                
+                // set up the bitmap background of the main screen (game field)
+                bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
+                decompress(splashBitmap, BG_GFX,  LZ77Vram);
                 
                 two_players_mode = true;
                 
