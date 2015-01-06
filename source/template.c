@@ -20,6 +20,7 @@ License: GPL v3
 
 #include "background.h"
 #include <digits.h>
+#include <main_menu.h>
 
 // The digit sprites
 u16* sprite_gfx_mem[12];
@@ -75,14 +76,19 @@ int main(void) {
     paddle p2 = {SCREEN_WIDTH - 8, SCREEN_HEIGHT / 2 - 1 - 16, 1, 32, 8, 0};
     
 	videoSetMode(MODE_5_2D);
+    videoSetModeSub(MODE_5_2D);
     
     vramSetBankA(VRAM_A_MAIN_BG);
     vramSetBankB(VRAM_B_MAIN_SPRITE);
+    vramSetBankC(VRAM_C_SUB_BG);
     
-    // set up our bitmap background
+    // set up the bitmap background of the main screen (game field)
 	bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
-    
 	decompress(backgroundBitmap, BG_GFX,  LZ77Vram);
+    
+    // set up the bitmap background of the main menu on the sub screen
+	bgInitSub(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
+	decompress(main_menuBitmap, BG_GFX_SUB,  LZ77Vram);
     
     // Initialize the 2D sprite engine of the main (top) screen
 	oamInit(&oamMain, SpriteMapping_1D_128, false);
@@ -112,8 +118,6 @@ int main(void) {
 	}
     
 	SPRITE_PALETTE[1] = RGB15(31,31,31);    // White
-
-    consoleDemoInit();
     
     mmInitDefaultMem((mm_addr)soundbank_bin);
 	
@@ -145,8 +149,6 @@ int main(void) {
     
     // sound effect handle (for cancelling it later)
 	mm_sfxhand amb = 0;
-    
-    iprintf("PongDS\n");
     
 	while(1) {
         
@@ -342,9 +344,6 @@ int main(void) {
         // Update the position of the ball
         b.x = b.x + b.speed_x;
         b.y = b.y + b.speed_y;
-        
-        iprintf("\x1b[10;0HCPU: %d", p1.score);
-        iprintf("\x1b[11;0HPlayer: %d", p2.score);
         
         // Set the oam entry for the ball
 		oamSet(&oamMain, //main graphics engine context
