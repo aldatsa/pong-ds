@@ -159,7 +159,21 @@ int main(void) {
         keys_released = keysUp();
         
 		if(keysHeld() & KEY_TOUCH) {
-			touchRead(&touch);
+			
+            touchRead(&touch);
+            
+            // The user selected one player mode
+            if (touch.px >= 52 && touch.px <= 211 && touch.py >= 53 && touch.py <= 73) {
+                
+                two_players_mode = false;
+                
+            // The user selected two players mode
+            } else if (touch.px >= 52 && touch.px <= 211 && touch.py >= 77 && touch.py <= 97) {
+                
+                two_players_mode = true;
+                
+            }
+            
 		}
         
         // Play looping ambulance sound effect out of left speaker if A button is pressed
