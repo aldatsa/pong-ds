@@ -41,6 +41,17 @@ void initDigits(u8* gfx) {
 	}
 }
 
+//---------------------------------------------------------------------
+// Initializes the game field
+//---------------------------------------------------------------------
+int initGameField() {
+    
+    // set up the bitmap background of the main screen (game field)
+    bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
+    decompress(backgroundBitmap, BG_GFX,  LZ77Vram);
+    
+}
+
 //---------------------------------------------------------------------------------
 int main(void) {
 	//---------------------------------------------------------------------------------
@@ -430,9 +441,7 @@ int main(void) {
                 // The user selected one player mode in the main menu
                 if (touch.px >= 52 && touch.px <= 211 && touch.py >= 53 && touch.py <= 73) {
                     
-                    // set up the bitmap background of the main screen (game field)
-                    bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
-                    decompress(backgroundBitmap, BG_GFX,  LZ77Vram);
+                    initGameField();
                     
                     game_started = true;
                     two_players_mode = false;
@@ -440,9 +449,7 @@ int main(void) {
                 // The user selected two players mode in the main menu
                 } else if (touch.px >= 52 && touch.px <= 211 && touch.py >= 77 && touch.py <= 97) {
                     
-                    // set up the bitmap background of the main screen (game field)
-                    bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
-                    decompress(backgroundBitmap, BG_GFX,  LZ77Vram);
+                    initGameField();
                     
                     game_started = true;
                     two_players_mode = true;
