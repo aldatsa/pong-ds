@@ -26,6 +26,8 @@ License: GPL v3
 // The digit sprites
 u16* sprite_gfx_mem[12];
 
+bool game_started = false;
+
 //---------------------------------------------------------------------
 // Load all the digits into memory
 //---------------------------------------------------------------------
@@ -159,31 +161,297 @@ int main(void) {
         keys_held = keysHeld();
         keys_released = keysUp();
         
-		if(keysHeld() & KEY_TOUCH) {
-			
-            touchRead(&touch);
+        // The game has started
+        if (game_started) {
             
-            // The user selected one player mode
-            if (touch.px >= 52 && touch.px <= 211 && touch.py >= 53 && touch.py <= 73) {
+            // One player mode (VS CPU)
+            if (!two_players_mode) {
                 
-                // set up the bitmap background of the main screen (game field)
-                bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
-                decompress(backgroundBitmap, BG_GFX,  LZ77Vram);
+                // Artificial intelligence for the paddle controlled by the CPU (only in one player mode)
                 
-                two_players_mode = false;
+                // If the ball is moving towards the paddle controlled by the CPU
+                if (b.speed_x < 0) {
+                    
+                    // If the ball is above the paddle
+                    if (b.y < p1.y) {
+                        
+                        // Don't let the paddle move above the top of the screen
+                        if (p1.y > 0) {
+                            
+                            // Move the paddle up
+                            p1.y = p1.y - 1;
+                            
+                        }
+                        
+                    // If the ball is below the paddle    
+                    } else {
+                        
+                        // Don't let the paddle move below the bottom of the screen
+                        if (p1.y < SCREEN_HEIGHT - p1.height) {
+                            
+                            // Move the paddle down
+                            p1.y = p1.y + 1;
+                            
+                        }
+                        
+                    }
+                    
+                // If the ball is moving towards the paddle controlled by the user    
+                } else {
+                    
+                    // If the paddle controlled by the CPU is above the center of the screen
+                    if (p1.y > SCREEN_HEIGHT / 2 - 1 - p1.height / 2) {
+                        
+                        // Move the paddle controlled byt the CPU down
+                        p1.y = p1.y - 1;
+                        
+                    // If the paddle controlled by the CPU is below the center of the screen
+                    } else {
+                        
+                        // Move the paddle controlled by the CPU up
+                        p1.y = p1.y + 1;
+                        
+                    }
+                }
                 
-            // The user selected two players mode
-            } else if (touch.px >= 52 && touch.px <= 211 && touch.py >= 77 && touch.py <= 97) {
+                // If the player is holding the up button
+                if (keys_held & KEY_UP) {
+                    
+                    // Don't let the paddle move above the top of the screen
+                    if (p2.y > 0) {
+                        
+                        // Move the right paddle up
+                        p2.y = p2.y - 1;
+                        
+                    }
+                    
+                // Else if the player is holding the down button
+                } else if (keys_held & KEY_DOWN) {
+                    
+                    // Don't let the paddle move below the bottom of the screen
+                    if (p2.y < SCREEN_HEIGHT - p2.height) {
+                        
+                        // Move the right paddle down
+                        p2.y = p2.y + 1;
+                        
+                    }
+                    
+                }
                 
-                // set up the bitmap background of the main screen (game field)
-                bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
-                decompress(splashBitmap, BG_GFX,  LZ77Vram);
+            // Two players mode
+            } else {
                 
-                two_players_mode = true;
+                // If the first player is holding the up button
+                if (keys_held & KEY_UP) {
+                    
+                    // Don't let the paddle move above the top of the screen
+                    if (p1.y > 0) {
+                        
+                        // Move the right paddle up
+                        p1.y = p1.y - 1;
+                        
+                    }
+                    
+                // Else if the first player is holding the down button
+                } else if (keys_held & KEY_DOWN) {
+                    
+                    // Don't let the paddle move below the bottom of the screen
+                    if (p1.y < SCREEN_HEIGHT - p1.height) {
+                        
+                        // Move the right paddle down
+                        p1.y = p1.y + 1;
+                        
+                    }
+                    
+                }
+                
+                // If the second player is holding the X button
+                if (keys_held & KEY_X) {
+                    
+                    // Don't let the paddle move above the top of the screen
+                    if (p2.y > 0) {
+                        
+                        p2.y = p2.y - 1;
+                        
+                    }
+                    
+                // Else if the second player is holding the B button
+                } else if (keys_held & KEY_B) {
+                    
+                    // Don't let the paddle move below the bottom of the screen
+                    if (p2.y < SCREEN_HEIGHT - p2.height) {
+                        
+                        p2.y = p2.y + 1;
+                        
+                    }
+                    
+                }
                 
             }
             
-		}
+            // Bottom and top borders of the screen
+            if (b.y == 0 || b.y == SCREEN_HEIGHT - 1 - b.height) {
+                b.speed_y = -1 * b.speed_y;
+            }
+            
+            // Left border of the screen
+            if (b.x == 0) {
+                
+                p2.score = p2.score + 1;
+                
+                b.x = SCREEN_WIDTH / 2 - 1 - b.width / 2;
+                b.y = SCREEN_HEIGHT / 2 - 1 - b.height / 2;
+                b.speed_x = 1;
+                b.speed_y = 1;
+                
+            }
+            
+            // Right border of the screen
+            if (b.x == SCREEN_WIDTH - 1) {
+                
+                p1.score = p1.score + 1;
+                
+                b.x = SCREEN_WIDTH / 2 - 1 - b.width / 2;
+                b.y = SCREEN_HEIGHT / 2 - 1 - b.height / 2;
+                b.speed_x = -1;
+                b.speed_y = 1;
+                
+            }
+            
+            // Left paddle collision detection
+            if (b.x == p1.x + p1.width && b.y > p1.y - b.height && b.y < p1.y + p1.height + b.height) {
+                b.speed_x = -1 * b.speed_x;
+            }
+            
+            // Right paddle collision detection
+            if (b.x == p2.x - p2.width && b.y > p2.y - b.height && b.y < p2.y + p2.height + b.height) {
+                b.speed_x = -1 * b.speed_x;
+            }
+            
+            // Update the position of the ball
+            b.x = b.x + b.speed_x;
+            b.y = b.y + b.speed_y;
+            
+            // Set the oam entry for the ball
+            oamSet(&oamMain, //main graphics engine context
+                0,           //oam index (0 to 127)  
+                b.x, b.y,   //x and y pixle location of the sprite
+                0,                    //priority, lower renders last (on top)
+                0,					  //this is the palette index if multiple palettes or the alpha value if bmp sprite	
+                SpriteSize_8x8,     
+                SpriteColorFormat_256Color, 
+                gfx,                  //pointer to the loaded graphics
+                -1,                  //sprite rotation data  
+                false,               //double the size when rotating?
+                false,			//hide the sprite?
+                false, false, //vflip, hflip
+                false	//apply mosaic
+                );              
+            
+            // Set the oam entry for the left paddle
+            oamSet(&oamMain, //main graphics engine context
+                1,           //oam index (0 to 127)  
+                p1.x, p1.y,   //x and y pixle location of the sprite
+                0,                    //priority, lower renders last (on top)
+                0,					  //this is the palette index if multiple palettes or the alpha value if bmp sprite	
+                SpriteSize_8x32,     
+                SpriteColorFormat_256Color, 
+                gfx_p1,                  //pointer to the loaded graphics
+                -1,                  //sprite rotation data  
+                false,               //double the size when rotating?
+                false,			//hide the sprite?
+                false, false, //vflip, hflip
+                false	//apply mosaic
+                );
+    
+            // Set the oam entry for the right paddle
+            oamSet(&oamMain, //main graphics engine context
+                2,           //oam index (0 to 127)  
+                p2.x, p2.y,   //x and y pixle location of the sprite
+                0,                    //priority, lower renders last (on top)
+                0,					  //this is the palette index if multiple palettes or the alpha value if bmp sprite	
+                SpriteSize_8x32,     
+                SpriteColorFormat_256Color, 
+                gfx_p2,                  //pointer to the loaded graphics
+                -1,                  //sprite rotation data  
+                false,               //double the size when rotating?
+                false,			//hide the sprite?
+                false, false, //vflip, hflip
+                false	//apply mosaic
+                );
+            
+            // Set the oam entry for the score of the first player
+            oamSet(&oamMain,                    // main graphics engine context
+                   3,                           // oam index (0 to 127)
+                   SCREEN_WIDTH / 2 - 40,       // x location of the sprite
+                   8,                           // y location of the sprite
+                   0,                           // priority, lower renders last (on top)
+                   0,                           // this is the palette index if multiple palettes or the alpha value if bmp sprite
+                   SpriteSize_32x32,
+                   SpriteColorFormat_256Color,
+                   sprite_gfx_mem[p1.score],    // pointer to the loaded graphics
+                   -1,                          // sprite rotation data
+                   false,                       // double the size when rotating?
+                   false,                       // hide the sprite?
+                   false,                       // vflip
+                   false,                       // hflip
+                   false);                      // apply mosaic
+    
+            // Set the oam entry for the score of the second player
+            oamSet(&oamMain,                    // main graphics engine context
+                   4,                           // oam index (0 to 127)
+                   SCREEN_WIDTH / 2 + 8,       // x location of the sprite
+                   8,                           // y location of the sprite
+                   0,                           // priority, lower renders last (on top)
+                   0,                           // this is the palette index if multiple palettes or the alpha value if bmp sprite
+                   SpriteSize_32x32,
+                   SpriteColorFormat_256Color,
+                   sprite_gfx_mem[p2.score],    // pointer to the loaded graphics
+                   -1,                          // sprite rotation data
+                   false,                       // double the size when rotating?
+                   false,                       // hide the sprite?
+                   false,                       // vflip
+                   false,                       // hflip
+                   false);                      // apply mosaic
+            
+            // Wait for a vertical blank interrupt
+            swiWaitForVBlank();
+            
+            // Update the oam memories of the main screen
+            oamUpdate(&oamMain);
+            
+        // We are in the main menu
+        } else {
+            
+            if(keysHeld() & KEY_TOUCH) {
+                
+                touchRead(&touch);
+                
+                // The user selected one player mode in the main menu
+                if (touch.px >= 52 && touch.px <= 211 && touch.py >= 53 && touch.py <= 73) {
+                    
+                    // set up the bitmap background of the main screen (game field)
+                    bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
+                    decompress(backgroundBitmap, BG_GFX,  LZ77Vram);
+                    
+                    game_started = true;
+                    two_players_mode = false;
+                    
+                // The user selected two players mode in the main menu
+                } else if (touch.px >= 52 && touch.px <= 211 && touch.py >= 77 && touch.py <= 97) {
+                    
+                    // set up the bitmap background of the main screen (game field)
+                    bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
+                    decompress(backgroundBitmap, BG_GFX,  LZ77Vram);
+                    
+                    game_started = true;
+                    two_players_mode = true;
+                    
+                }
+                
+            }
+            
+        }
         
         // Play looping ambulance sound effect out of left speaker if A button is pressed
 		if ( keys_pressed & KEY_A ) {
@@ -200,261 +468,6 @@ int main(void) {
 			mmEffectEx(&boom);
 		}
         
-        // One player mode (VS CPU)
-        if (!two_players_mode) {
-            
-            // Artificial intelligence for the paddle controlled by the CPU (only in one player mode)
-            
-            // If the ball is moving towards the paddle controlled by the CPU
-            if (b.speed_x < 0) {
-                
-                // If the ball is above the paddle
-                if (b.y < p1.y) {
-                    
-                    // Don't let the paddle move above the top of the screen
-                    if (p1.y > 0) {
-                        
-                        // Move the paddle up
-                        p1.y = p1.y - 1;
-                        
-                    }
-                    
-                // If the ball is below the paddle    
-                } else {
-                    
-                    // Don't let the paddle move below the bottom of the screen
-                    if (p1.y < SCREEN_HEIGHT - p1.height) {
-                        
-                        // Move the paddle down
-                        p1.y = p1.y + 1;
-                        
-                    }
-                    
-                }
-                
-            // If the ball is moving towards the paddle controlled by the user    
-            } else {
-                
-                // If the paddle controlled by the CPU is above the center of the screen
-                if (p1.y > SCREEN_HEIGHT / 2 - 1 - p1.height / 2) {
-                    
-                    // Move the paddle controlled byt the CPU down
-                    p1.y = p1.y - 1;
-                    
-                // If the paddle controlled by the CPU is below the center of the screen
-                } else {
-                    
-                    // Move the paddle controlled by the CPU up
-                    p1.y = p1.y + 1;
-                    
-                }
-            }
-            
-            // If the player is holding the up button
-            if (keys_held & KEY_UP) {
-                
-                // Don't let the paddle move above the top of the screen
-                if (p2.y > 0) {
-                    
-                    // Move the right paddle up
-                    p2.y = p2.y - 1;
-                    
-                }
-                
-            // Else if the player is holding the down button
-            } else if (keys_held & KEY_DOWN) {
-                
-                // Don't let the paddle move below the bottom of the screen
-                if (p2.y < SCREEN_HEIGHT - p2.height) {
-                    
-                    // Move the right paddle down
-                    p2.y = p2.y + 1;
-                    
-                }
-                
-            }
-            
-        // Two players mode
-        } else {
-            
-            // If the first player is holding the up button
-            if (keys_held & KEY_UP) {
-                
-                // Don't let the paddle move above the top of the screen
-                if (p1.y > 0) {
-                    
-                    // Move the right paddle up
-                    p1.y = p1.y - 1;
-                    
-                }
-                
-            // Else if the first player is holding the down button
-            } else if (keys_held & KEY_DOWN) {
-                
-                // Don't let the paddle move below the bottom of the screen
-                if (p1.y < SCREEN_HEIGHT - p1.height) {
-                    
-                    // Move the right paddle down
-                    p1.y = p1.y + 1;
-                    
-                }
-                
-            }
-            
-            // If the second player is holding the X button
-            if (keys_held & KEY_X) {
-                
-                // Don't let the paddle move above the top of the screen
-                if (p2.y > 0) {
-                    
-                    p2.y = p2.y - 1;
-                    
-                }
-                
-            // Else if the second player is holding the B button
-            } else if (keys_held & KEY_B) {
-                
-                // Don't let the paddle move below the bottom of the screen
-                if (p2.y < SCREEN_HEIGHT - p2.height) {
-                    
-                    p2.y = p2.y + 1;
-                    
-                }
-                
-            }
-            
-        }
-        
-        // Bottom and top borders of the screen
-        if (b.y == 0 || b.y == SCREEN_HEIGHT - 1 - b.height) {
-            b.speed_y = -1 * b.speed_y;
-        }
-        
-        // Left border of the screen
-        if (b.x == 0) {
-            
-            p2.score = p2.score + 1;
-            
-            b.x = SCREEN_WIDTH / 2 - 1 - b.width / 2;
-            b.y = SCREEN_HEIGHT / 2 - 1 - b.height / 2;
-            b.speed_x = 1;
-            b.speed_y = 1;
-            
-        }
-        
-        // Right border of the screen
-        if (b.x == SCREEN_WIDTH - 1) {
-            
-            p1.score = p1.score + 1;
-            
-            b.x = SCREEN_WIDTH / 2 - 1 - b.width / 2;
-            b.y = SCREEN_HEIGHT / 2 - 1 - b.height / 2;
-            b.speed_x = -1;
-            b.speed_y = 1;
-            
-        }
-        
-        // Left paddle collision detection
-        if (b.x == p1.x + p1.width && b.y > p1.y - b.height && b.y < p1.y + p1.height + b.height) {
-            b.speed_x = -1 * b.speed_x;
-        }
-        
-        // Right paddle collision detection
-        if (b.x == p2.x - p2.width && b.y > p2.y - b.height && b.y < p2.y + p2.height + b.height) {
-            b.speed_x = -1 * b.speed_x;
-        }
-        
-        // Update the position of the ball
-        b.x = b.x + b.speed_x;
-        b.y = b.y + b.speed_y;
-        
-        // Set the oam entry for the ball
-		oamSet(&oamMain, //main graphics engine context
-			0,           //oam index (0 to 127)  
-			b.x, b.y,   //x and y pixle location of the sprite
-			0,                    //priority, lower renders last (on top)
-			0,					  //this is the palette index if multiple palettes or the alpha value if bmp sprite	
-			SpriteSize_8x8,     
-			SpriteColorFormat_256Color, 
-			gfx,                  //pointer to the loaded graphics
-			-1,                  //sprite rotation data  
-			false,               //double the size when rotating?
-			false,			//hide the sprite?
-			false, false, //vflip, hflip
-			false	//apply mosaic
-			);              
-		
-        // Set the oam entry for the left paddle
-		oamSet(&oamMain, //main graphics engine context
-			1,           //oam index (0 to 127)  
-			p1.x, p1.y,   //x and y pixle location of the sprite
-			0,                    //priority, lower renders last (on top)
-			0,					  //this is the palette index if multiple palettes or the alpha value if bmp sprite	
-			SpriteSize_8x32,     
-			SpriteColorFormat_256Color, 
-			gfx_p1,                  //pointer to the loaded graphics
-			-1,                  //sprite rotation data  
-			false,               //double the size when rotating?
-			false,			//hide the sprite?
-			false, false, //vflip, hflip
-			false	//apply mosaic
-			);
-
-        // Set the oam entry for the right paddle
-		oamSet(&oamMain, //main graphics engine context
-			2,           //oam index (0 to 127)  
-			p2.x, p2.y,   //x and y pixle location of the sprite
-			0,                    //priority, lower renders last (on top)
-			0,					  //this is the palette index if multiple palettes or the alpha value if bmp sprite	
-			SpriteSize_8x32,     
-			SpriteColorFormat_256Color, 
-			gfx_p2,                  //pointer to the loaded graphics
-			-1,                  //sprite rotation data  
-			false,               //double the size when rotating?
-			false,			//hide the sprite?
-			false, false, //vflip, hflip
-			false	//apply mosaic
-			);
-        
-        // Set the oam entry for the score of the first player
-        oamSet(&oamMain,                    // main graphics engine context
-               3,                           // oam index (0 to 127)
-               SCREEN_WIDTH / 2 - 40,       // x location of the sprite
-               8,                           // y location of the sprite
-               0,                           // priority, lower renders last (on top)
-               0,                           // this is the palette index if multiple palettes or the alpha value if bmp sprite
-               SpriteSize_32x32,
-               SpriteColorFormat_256Color,
-               sprite_gfx_mem[p1.score],    // pointer to the loaded graphics
-               -1,                          // sprite rotation data
-               false,                       // double the size when rotating?
-               false,                       // hide the sprite?
-               false,                       // vflip
-               false,                       // hflip
-               false);                      // apply mosaic
-
-        // Set the oam entry for the score of the second player
-        oamSet(&oamMain,                    // main graphics engine context
-               4,                           // oam index (0 to 127)
-               SCREEN_WIDTH / 2 + 8,       // x location of the sprite
-               8,                           // y location of the sprite
-               0,                           // priority, lower renders last (on top)
-               0,                           // this is the palette index if multiple palettes or the alpha value if bmp sprite
-               SpriteSize_32x32,
-               SpriteColorFormat_256Color,
-               sprite_gfx_mem[p2.score],    // pointer to the loaded graphics
-               -1,                          // sprite rotation data
-               false,                       // double the size when rotating?
-               false,                       // hide the sprite?
-               false,                       // vflip
-               false,                       // hflip
-               false);                      // apply mosaic
-        
-        // Wait for a vertical blank interrupt
-		swiWaitForVBlank();
-        
-		// Update the oam memories of the main screen
-		oamUpdate(&oamMain);
 	}
 
 	return 0;
