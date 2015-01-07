@@ -575,28 +575,22 @@ int main(void) {
                         
                     }
                     
-                    /*initGameField();
-                    
-                    initGame(&b, &p1, &p2);
-                    
-                    showMenu(1);
-                    
-                    game_started = true;
-                    two_players_mode = false;
-                    */
-                    
                 // The user selected two players mode in the main menu
                 } else if (touch.px >= 52 && touch.px <= 211 && touch.py >= 77 && touch.py <= 97) {
                     
-                    /*initGameField();
+                    // Button pressed
+                    if (!isBitSet(menu_buttons_pressed, MAIN_MENU_TWO_PLAYERS) && !isBitSet(menu_buttons_held, MAIN_MENU_TWO_PLAYERS) && !isBitSet(menu_buttons_released, MAIN_MENU_TWO_PLAYERS)) {
+                        
+                        menu_buttons_pressed = setBit(menu_buttons_pressed, MAIN_MENU_TWO_PLAYERS);
+                        
+                    // Button held
+                    } else if (isBitSet(menu_buttons_pressed, MAIN_MENU_TWO_PLAYERS)) {
+                        
+                        menu_buttons_held = setBit(menu_buttons_held, MAIN_MENU_TWO_PLAYERS);
+                        menu_buttons_pressed = unsetBit(menu_buttons_pressed, MAIN_MENU_TWO_PLAYERS);
+                        
+                    }
                     
-                    initGame(&b, &p1, &p2);
-                    
-                    showMenu(2);
-                    
-                    game_started = true;
-                    two_players_mode = true;
-                    */
                 }
                 
             // One player mode button released
@@ -614,6 +608,19 @@ int main(void) {
                 game_started = true;
                 two_players_mode = false;
                 
+            } else if (isBitSet(menu_buttons_held, MAIN_MENU_TWO_PLAYERS)) {
+                
+                //setBit(menu_buttons_released, MAIN_MENU_TWO_PLAYERS);
+                menu_buttons_held = unsetBit(menu_buttons_held, MAIN_MENU_TWO_PLAYERS);
+                
+                initGameField();
+                
+                initGame(&b, &p1, &p2);
+                
+                showMenu(2);
+                
+                game_started = true;
+                two_players_mode = true;
             }
             
         }
