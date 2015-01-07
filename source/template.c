@@ -22,6 +22,8 @@ License: GPL v3
 #include <digits.h>
 #include <splash.h>
 #include <main_menu.h>
+#include <one_p_game_menu.h>
+#include <two_p_game_menu.h>
 
 // The digit sprites
 u16* sprite_gfx_mem[12];
@@ -39,6 +41,36 @@ void initDigits(u8* gfx) {
 		dmaCopy(gfx, sprite_gfx_mem[i], 32*32);
 		gfx += 32*32;
 	}
+}
+
+//---------------------------------------------------------------------
+// Initializes the game field
+//---------------------------------------------------------------------
+int showMenu(int id) {
+    
+    // set up the bitmap background of the main menu on the sub screen
+	bgInitSub(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
+	
+    
+    switch (id) {
+        
+        case 0:
+            decompress(main_menuBitmap, BG_GFX_SUB,  LZ77Vram);
+            break;
+        
+        case 1:
+            decompress(one_p_game_menuBitmap, BG_GFX_SUB,  LZ77Vram);
+            break;
+        
+        case 2:
+            decompress(two_p_game_menuBitmap, BG_GFX_SUB,  LZ77Vram);
+            break;
+        
+        default:
+            decompress(main_menuBitmap, BG_GFX_SUB,  LZ77Vram);
+        
+    }
+
 }
 
 //---------------------------------------------------------------------
@@ -100,9 +132,8 @@ int main(void) {
 	bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
     decompress(splashBitmap, BG_GFX,  LZ77Vram);
     
-    // set up the bitmap background of the main menu on the sub screen
-	bgInitSub(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
-	decompress(main_menuBitmap, BG_GFX_SUB,  LZ77Vram);
+    // Show the main menu
+    showMenu(0);
     
     // Initialize the 2D sprite engine of the main (top) screen
 	oamInit(&oamMain, SpriteMapping_1D_128, false);
@@ -442,6 +473,7 @@ int main(void) {
                 if (touch.px >= 52 && touch.px <= 211 && touch.py >= 53 && touch.py <= 73) {
                     
                     initGameField();
+                    showMenu(1);
                     
                     game_started = true;
                     two_players_mode = false;
@@ -450,6 +482,7 @@ int main(void) {
                 } else if (touch.px >= 52 && touch.px <= 211 && touch.py >= 77 && touch.py <= 97) {
                     
                     initGameField();
+                    showMenu(2);
                     
                     game_started = true;
                     two_players_mode = true;
