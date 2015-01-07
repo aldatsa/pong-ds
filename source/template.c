@@ -62,6 +62,17 @@ void initDigits(u8* gfx) {
 }
 
 //---------------------------------------------------------------------
+// Displays the splash screen
+//---------------------------------------------------------------------
+int showSplash() {
+    
+    // set up the bitmap background of the main screen (splash screen)
+	bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
+    decompress(splashBitmap, BG_GFX,  LZ77Vram);
+    
+}
+
+//---------------------------------------------------------------------
 // Shows the corresponding menu
 //---------------------------------------------------------------------
 int showMenu(int id) {
@@ -156,9 +167,7 @@ int main(void) {
     vramSetBankB(VRAM_B_MAIN_SPRITE);
     vramSetBankC(VRAM_C_SUB_BG);
     
-    // set up the bitmap background of the main screen (splash screen)
-	bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
-    decompress(splashBitmap, BG_GFX,  LZ77Vram);
+    showSplash();
     
     // Show the main menu
     showMenu(0);
@@ -247,7 +256,12 @@ int main(void) {
                 // The user selected two players mode in the main menu
                 } else if (touch.px >= 52 && touch.px <= 211 && touch.py >= 77 && touch.py <= 97) {
                     
+                    showSplash();
                     
+                    // Display the main menu
+                    showMenu(0);
+                    
+                    game_started = false;
                     
                 }
                 
