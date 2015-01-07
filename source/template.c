@@ -48,6 +48,35 @@ u16* sprite_gfx_mem[12];
 
 bool game_started = false;
 
+unsigned int menu_buttons_pressed = 0x0;
+unsigned int menu_buttons_held = 0x0;
+unsigned int menu_buttons_released = 0x0;
+
+enum menu_button_flags {
+  MAIN_MENU_ONE_PLAYER = 1 << 0,
+  MAIN_MENU_TWO_PLAYERS = 1 << 1,
+  ONE_PLAYER_MENU_RESTART = 1 << 2,
+  ONE_PLAYER_MENU_BACK = 1 << 3,
+  TWO_PLAYER_MENU_RESTART = 1 << 4,
+  TWO_PLAYER_MENU_BACK = 1 << 5,
+};
+
+bool isBitSet(unsigned int value, unsigned int bit_flag)
+{
+    return (value & bit_flag) != 0;
+}
+
+unsigned int setBit(unsigned int value, unsigned int bit_flag) {
+    
+    return value | bit_flag;
+}
+
+unsigned int unsetBit(unsigned int value, unsigned int bit_flag) {
+    
+    return value & ~(bit_flag);
+
+}
+
 //---------------------------------------------------------------------
 // Load all the digits into memory
 //---------------------------------------------------------------------
@@ -533,7 +562,20 @@ int main(void) {
                 // The user selected one player mode in the main menu
                 if (touch.px >= 52 && touch.px <= 211 && touch.py >= 53 && touch.py <= 73) {
                     
-                    initGameField();
+                    // Button pressed
+                    if (!isBitSet(menu_buttons_pressed, MAIN_MENU_ONE_PLAYER) && !isBitSet(menu_buttons_held, MAIN_MENU_ONE_PLAYER) && !isBitSet(menu_buttons_released, MAIN_MENU_ONE_PLAYER)) {
+                        
+                        menu_buttons_pressed = setBit(menu_buttons_pressed, MAIN_MENU_ONE_PLAYER);
+                        
+                    // Button held
+                    } else if (isBitSet(menu_buttons_pressed, MAIN_MENU_ONE_PLAYER)) {
+                        
+                        menu_buttons_held = setBit(menu_buttons_held, MAIN_MENU_ONE_PLAYER);
+                        menu_buttons_pressed = unsetBit(menu_buttons_pressed, MAIN_MENU_ONE_PLAYER);
+                        
+                    }
+                    
+                    /*initGameField();
                     
                     initGame(&b, &p1, &p2);
                     
@@ -541,11 +583,12 @@ int main(void) {
                     
                     game_started = true;
                     two_players_mode = false;
+                    */
                     
                 // The user selected two players mode in the main menu
                 } else if (touch.px >= 52 && touch.px <= 211 && touch.py >= 77 && touch.py <= 97) {
                     
-                    initGameField();
+                    /*initGameField();
                     
                     initGame(&b, &p1, &p2);
                     
@@ -553,8 +596,23 @@ int main(void) {
                     
                     game_started = true;
                     two_players_mode = true;
-                    
+                    */
                 }
+                
+            // One player mode button released
+            } else if (isBitSet(menu_buttons_held, MAIN_MENU_ONE_PLAYER)) {
+                
+                //setBit(menu_buttons_released, MAIN_MENU_ONE_PLAYER);
+                menu_buttons_held = unsetBit(menu_buttons_held, MAIN_MENU_ONE_PLAYER);
+                
+                initGameField();
+                
+                initGame(&b, &p1, &p2);
+                
+                showMenu(1);
+                
+                game_started = true;
+                two_players_mode = false;
                 
             }
             
