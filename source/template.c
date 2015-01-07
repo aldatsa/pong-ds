@@ -25,6 +25,24 @@ License: GPL v3
 #include <one_p_game_menu.h>
 #include <two_p_game_menu.h>
 
+typedef struct {
+   int x;
+   int y;
+   int speed_x;
+   int speed_y;
+   int height;
+   int width;
+} ball;
+
+typedef struct {
+    int x;
+    int y;
+    int speed;
+    int height;
+    int width;
+    int score;
+} paddle;
+
 // The digit sprites
 u16* sprite_gfx_mem[12];
 
@@ -44,7 +62,7 @@ void initDigits(u8* gfx) {
 }
 
 //---------------------------------------------------------------------
-// Initializes the game field
+// Shows the corresponding menu
 //---------------------------------------------------------------------
 int showMenu(int id) {
     
@@ -84,6 +102,35 @@ int initGameField() {
     
 }
 
+//---------------------------------------------------------------------
+// Initializes the game field
+//---------------------------------------------------------------------
+int initGame(ball *b, paddle *p1, paddle *p2) {
+    
+    b->x = SCREEN_WIDTH / 2 - 1 - 4;
+    b->y = SCREEN_HEIGHT / 2 - 1 - 4;
+    b->speed_x = 1;
+    b->speed_y = 1;
+    b->height = 8;
+    b->width = 8;
+    
+    p1->x = 0;
+    p1->y = SCREEN_HEIGHT / 2 - 1 - 16;
+    p1->speed = 1;
+    p1->height = 32;
+    p1->width = 8;
+    p1->score = 0;
+    
+    p2->x = SCREEN_WIDTH - 8;
+    p2->y = SCREEN_HEIGHT / 2 - 1 - 16;
+    p2->speed = 1;
+    p2->height = 32;
+    p2->width = 8;
+    p2->score = 0;
+    
+    return 0;
+}
+
 //---------------------------------------------------------------------------------
 int main(void) {
 	//---------------------------------------------------------------------------------
@@ -93,24 +140,6 @@ int main(void) {
     int keys_pressed, keys_held, keys_released;
     
     bool two_players_mode = true;
-    
-    typedef struct {
-       int x;
-       int y;
-       int speed_x;
-       int speed_y;
-       int height;
-       int width;
-    } ball;
-
-    typedef struct {
-        int x;
-        int y;
-        int speed;
-        int height;
-        int width;
-        int score;
-    } paddle;
     
     // Ball
     ball b = {SCREEN_WIDTH / 2 - 1 - 4, SCREEN_HEIGHT / 2 - 1 - 4, 1, 1, 8, 8};
@@ -205,6 +234,27 @@ int main(void) {
         
         // The game has started
         if (game_started) {
+            
+            // The user tap on a menu option
+            if(keysHeld() & KEY_TOUCH) {
+                
+                touchRead(&touch);
+                
+                // The user selected to restart the game on the game menu
+                if (touch.px >= 52 && touch.px <= 211 && touch.py >= 53 && touch.py <= 73) {
+                    
+                    initGameField();
+                    
+                    initGame(&b, &p1, &p2);
+                    
+                // The user selected two players mode in the main menu
+                } else if (touch.px >= 52 && touch.px <= 211 && touch.py >= 77 && touch.py <= 97) {
+                    
+                    
+                    
+                }
+                
+            }
             
             // One player mode (VS CPU)
             if (!two_players_mode) {
@@ -473,6 +523,9 @@ int main(void) {
                 if (touch.px >= 52 && touch.px <= 211 && touch.py >= 53 && touch.py <= 73) {
                     
                     initGameField();
+                    
+                    initGame(&b, &p1, &p2);
+                    
                     showMenu(1);
                     
                     game_started = true;
@@ -482,6 +535,9 @@ int main(void) {
                 } else if (touch.px >= 52 && touch.px <= 211 && touch.py >= 77 && touch.py <= 97) {
                     
                     initGameField();
+                    
+                    initGame(&b, &p1, &p2);
+                    
                     showMenu(2);
                     
                     game_started = true;
