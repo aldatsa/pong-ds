@@ -57,8 +57,8 @@ enum menu_button_flags {
   MAIN_MENU_TWO_PLAYERS = 1 << 1,
   ONE_PLAYER_MENU_RESTART = 1 << 2,
   ONE_PLAYER_MENU_BACK = 1 << 3,
-  TWO_PLAYER_MENU_RESTART = 1 << 4,
-  TWO_PLAYER_MENU_BACK = 1 << 5,
+  TWO_PLAYERS_MENU_RESTART = 1 << 4,
+  TWO_PLAYERS_MENU_BACK = 1 << 5,
 };
 
 bool isBitSet(unsigned int value, unsigned int bit_flag)
@@ -277,22 +277,60 @@ int main(void) {
                 
                 touchRead(&touch);
                 
-                // The user selected to restart the game on the game menu
+                // The user tapped the restart button on the game menu
                 if (touch.px >= 52 && touch.px <= 211 && touch.py >= 53 && touch.py <= 73) {
                     
-                    initGame(&b, &p1, &p2);
+                    // Button pressed
+                    if (!isBitSet(menu_buttons_pressed, ONE_PLAYER_MENU_RESTART) && !isBitSet(menu_buttons_held, ONE_PLAYER_MENU_RESTART) && !isBitSet(menu_buttons_released, ONE_PLAYER_MENU_RESTART)) {
+                        
+                        menu_buttons_pressed = setBit(menu_buttons_pressed, ONE_PLAYER_MENU_RESTART);
+                        
+                    // Button held
+                    } else if (isBitSet(menu_buttons_pressed, ONE_PLAYER_MENU_RESTART)) {
+                        
+                        menu_buttons_held = setBit(menu_buttons_held, ONE_PLAYER_MENU_RESTART);
+                        menu_buttons_pressed = unsetBit(menu_buttons_pressed, ONE_PLAYER_MENU_RESTART);
+                        
+                    }
                     
-                // The user selected to return to the main menu
+                // The user tapped the back to main menu button
                 } else if (touch.px >= 52 && touch.px <= 211 && touch.py >= 77 && touch.py <= 97) {
                     
-                    showSplash();
-                    
-                    // Display the main menu
-                    showMenu(0);
-                    
-                    game_started = false;
+                    // Button pressed
+                    if (!isBitSet(menu_buttons_pressed, ONE_PLAYER_MENU_BACK) && !isBitSet(menu_buttons_held, ONE_PLAYER_MENU_BACK) && !isBitSet(menu_buttons_released, ONE_PLAYER_MENU_BACK)) {
+                        
+                        menu_buttons_pressed = setBit(menu_buttons_pressed, ONE_PLAYER_MENU_BACK);
+                        
+                    // Button held
+                    } else if (isBitSet(menu_buttons_pressed, ONE_PLAYER_MENU_BACK)) {
+                        
+                        menu_buttons_held = setBit(menu_buttons_held, ONE_PLAYER_MENU_BACK);
+                        menu_buttons_pressed = unsetBit(menu_buttons_pressed, ONE_PLAYER_MENU_BACK);
+                        
+                    }
                     
                 }
+                
+            // Restart button released
+            } else if (isBitSet(menu_buttons_held, ONE_PLAYER_MENU_RESTART) || isBitSet(menu_buttons_held, TWO_PLAYERS_MENU_RESTART)) {
+                
+                //menu_buttons_released = unsetBit(menu_buttons_released, ONE_PLAYER_MENU_RESTART);
+                menu_buttons_held = unsetBit(menu_buttons_held, ONE_PLAYER_MENU_RESTART);
+                
+                initGame(&b, &p1, &p2);
+                
+            // Back to main menu button released
+            } else if (isBitSet(menu_buttons_held, ONE_PLAYER_MENU_BACK) || isBitSet(menu_buttons_held, TWO_PLAYERS_MENU_BACK)) {
+                
+                //menu_buttons_released = unsetBit(menu_buttons_released, ONE_PLAYER_MENU_BACK);
+                menu_buttons_held = unsetBit(menu_buttons_held, ONE_PLAYER_MENU_BACK);
+                
+                showSplash();
+                
+                // Display the main menu
+                showMenu(0);
+                
+                game_started = false;
                 
             }
             
