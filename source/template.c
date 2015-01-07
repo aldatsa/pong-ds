@@ -69,7 +69,6 @@ int showMenu(int id) {
     // set up the bitmap background of the main menu on the sub screen
 	bgInitSub(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
 	
-    
     switch (id) {
         
         case 0:
@@ -103,7 +102,7 @@ int initGameField() {
 }
 
 //---------------------------------------------------------------------
-// Initializes the game field
+// Initializes the game
 //---------------------------------------------------------------------
 int initGame(ball *b, paddle *p1, paddle *p2) {
     
@@ -242,8 +241,6 @@ int main(void) {
                 
                 // The user selected to restart the game on the game menu
                 if (touch.px >= 52 && touch.px <= 211 && touch.py >= 53 && touch.py <= 73) {
-                    
-                    initGameField();
                     
                     initGame(&b, &p1, &p2);
                     
