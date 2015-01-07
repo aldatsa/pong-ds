@@ -253,7 +253,7 @@ int main(void) {
                     
                     initGame(&b, &p1, &p2);
                     
-                // The user selected two players mode in the main menu
+                // The user selected to return to the main menu
                 } else if (touch.px >= 52 && touch.px <= 211 && touch.py >= 77 && touch.py <= 97) {
                     
                     showSplash();
