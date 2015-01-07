@@ -183,7 +183,6 @@ int initGame(ball *b, paddle *p1, paddle *p2) {
 int main(void) {
 	//---------------------------------------------------------------------------------
 	int i = 0;
-    touchPosition touch;
     
     int keys_pressed, keys_held, keys_released;
     
@@ -278,113 +277,212 @@ int main(void) {
         keys_held = keysHeld();
         keys_released = keysUp();
         
-        // The game has started
-        if (screen == ONE_PLAYER_GAME || screen == TWO_PLAYERS_GAME) {
+        touchPosition touch;
+        
+        // The user tapped on a menu option
+        if(keys_held & KEY_TOUCH) {
             
-            // The user tap on a menu option
-            if(keysHeld() & KEY_TOUCH) {
+            touchRead(&touch);
+            
+            // The user tapped the first button
+            if (touch.px >= 52 && touch.px <= 211 && touch.py >= 53 && touch.py <= 73) {
                 
-                touchRead(&touch);
-                
-                // The user tapped the restart button on the game menu
-                if (touch.px >= 52 && touch.px <= 211 && touch.py >= 53 && touch.py <= 73) {
+                // 1 player mode button pressed in the main menu
+                if (screen == MAIN_MENU && !isBitSet(menu_buttons_pressed, MAIN_MENU_ONE_PLAYER) && !isBitSet(menu_buttons_held, MAIN_MENU_ONE_PLAYER) && !isBitSet(menu_buttons_released, MAIN_MENU_ONE_PLAYER)) {
                     
-                    // Button pressed (1 player mode)
-                    if (screen == ONE_PLAYER_GAME && !isBitSet(menu_buttons_pressed, ONE_PLAYER_MENU_RESTART) && !isBitSet(menu_buttons_held, ONE_PLAYER_MENU_RESTART) && !isBitSet(menu_buttons_released, ONE_PLAYER_MENU_RESTART)) {
-                        
-                        menu_buttons_pressed = setBit(menu_buttons_pressed, ONE_PLAYER_MENU_RESTART);
-                        
-                    // Button held (1 player mode)
-                    } else if (screen == ONE_PLAYER_GAME && isBitSet(menu_buttons_pressed, ONE_PLAYER_MENU_RESTART)) {
-                        
-                        menu_buttons_held = setBit(menu_buttons_held, ONE_PLAYER_MENU_RESTART);
-                        menu_buttons_pressed = unsetBit(menu_buttons_pressed, ONE_PLAYER_MENU_RESTART);
-                        
-                    // Button pressed (2 players mode)
-                    } else if (screen == TWO_PLAYERS_GAME && !isBitSet(menu_buttons_pressed, TWO_PLAYERS_MENU_RESTART) && !isBitSet(menu_buttons_held, TWO_PLAYERS_MENU_RESTART) && !isBitSet(menu_buttons_released, TWO_PLAYERS_MENU_RESTART)) {
-                        
-                        menu_buttons_pressed = setBit(menu_buttons_pressed, TWO_PLAYERS_MENU_RESTART);
-                        
-                    // Button held (2 players mode)
-                    } else if (screen == TWO_PLAYERS_GAME && isBitSet(menu_buttons_pressed, TWO_PLAYERS_MENU_RESTART)) {
-                        
-                        menu_buttons_held = setBit(menu_buttons_held, TWO_PLAYERS_MENU_RESTART);
-                        menu_buttons_pressed = unsetBit(menu_buttons_pressed, TWO_PLAYERS_MENU_RESTART);
-                        
-                    }
+                    menu_buttons_pressed = setBit(menu_buttons_pressed, MAIN_MENU_ONE_PLAYER);
                     
-                // The user tapped the back to main menu button
-                } else if (touch.px >= 52 && touch.px <= 211 && touch.py >= 77 && touch.py <= 97) {
+                // 1 player mode button held in the main menu
+                } else if (screen == MAIN_MENU && isBitSet(menu_buttons_pressed, MAIN_MENU_ONE_PLAYER)) {
                     
-                    // Button pressed (1 player mode)
-                    if (screen == ONE_PLAYER_GAME && !isBitSet(menu_buttons_pressed, ONE_PLAYER_MENU_BACK) && !isBitSet(menu_buttons_held, ONE_PLAYER_MENU_BACK) && !isBitSet(menu_buttons_released, ONE_PLAYER_MENU_BACK)) {
-                        
-                        menu_buttons_pressed = setBit(menu_buttons_pressed, ONE_PLAYER_MENU_BACK);
-                        
-                    // Button held (1 player mode)
-                    } else if (screen == ONE_PLAYER_GAME && isBitSet(menu_buttons_pressed, ONE_PLAYER_MENU_BACK)) {
-                        
-                        menu_buttons_held = setBit(menu_buttons_held, ONE_PLAYER_MENU_BACK);
-                        menu_buttons_pressed = unsetBit(menu_buttons_pressed, ONE_PLAYER_MENU_BACK);
-                        
-                    // Button pressed (2 players mode)
-                    } else if (screen == TWO_PLAYERS_GAME && !isBitSet(menu_buttons_pressed, TWO_PLAYERS_MENU_BACK) && !isBitSet(menu_buttons_held, TWO_PLAYERS_MENU_BACK) && !isBitSet(menu_buttons_released, TWO_PLAYERS_MENU_BACK)) {
-                        
-                        menu_buttons_pressed = setBit(menu_buttons_pressed, TWO_PLAYERS_MENU_BACK);
-                        
-                    // Button held (2 players mode)
-                    } else if (screen == TWO_PLAYERS_GAME && isBitSet(menu_buttons_pressed, TWO_PLAYERS_MENU_BACK)) {
-                        
-                        menu_buttons_held = setBit(menu_buttons_held, TWO_PLAYERS_MENU_BACK);
-                        menu_buttons_pressed = unsetBit(menu_buttons_pressed, TWO_PLAYERS_MENU_BACK);
-                        
-                    }
+                    menu_buttons_held = setBit(menu_buttons_held, MAIN_MENU_ONE_PLAYER);
+                    menu_buttons_pressed = unsetBit(menu_buttons_pressed, MAIN_MENU_ONE_PLAYER);
+                    
+                // Restart button pressed (1 player mode)
+                } else if (screen == ONE_PLAYER_GAME && !isBitSet(menu_buttons_pressed, ONE_PLAYER_MENU_RESTART) && !isBitSet(menu_buttons_held, ONE_PLAYER_MENU_RESTART) && !isBitSet(menu_buttons_released, ONE_PLAYER_MENU_RESTART)) {
+                    
+                    menu_buttons_pressed = setBit(menu_buttons_pressed, ONE_PLAYER_MENU_RESTART);
+                    
+                // Restart button held (1 player mode)
+                } else if (screen == ONE_PLAYER_GAME && isBitSet(menu_buttons_pressed, ONE_PLAYER_MENU_RESTART)) {
+                    
+                    menu_buttons_held = setBit(menu_buttons_held, ONE_PLAYER_MENU_RESTART);
+                    menu_buttons_pressed = unsetBit(menu_buttons_pressed, ONE_PLAYER_MENU_RESTART);
+                    
+                // Restart button pressed (2 players mode)
+                } else if (screen == TWO_PLAYERS_GAME && !isBitSet(menu_buttons_pressed, TWO_PLAYERS_MENU_RESTART) && !isBitSet(menu_buttons_held, TWO_PLAYERS_MENU_RESTART) && !isBitSet(menu_buttons_released, TWO_PLAYERS_MENU_RESTART)) {
+                    
+                    menu_buttons_pressed = setBit(menu_buttons_pressed, TWO_PLAYERS_MENU_RESTART);
+                    
+                // Restart button held (2 players mode)
+                } else if (screen == TWO_PLAYERS_GAME && isBitSet(menu_buttons_pressed, TWO_PLAYERS_MENU_RESTART)) {
+                    
+                    menu_buttons_held = setBit(menu_buttons_held, TWO_PLAYERS_MENU_RESTART);
+                    menu_buttons_pressed = unsetBit(menu_buttons_pressed, TWO_PLAYERS_MENU_RESTART);
                     
                 }
                 
-            // Restart button released (1 player mode)
-            } else if (isBitSet(menu_buttons_held, ONE_PLAYER_MENU_RESTART)) {
+            // The user tapped the second button
+            } else if (touch.px >= 52 && touch.px <= 211 && touch.py >= 77 && touch.py <= 97) {
                 
-                //menu_buttons_released = unsetBit(menu_buttons_released, ONE_PLAYER_MENU_RESTART);
-                menu_buttons_held = unsetBit(menu_buttons_held, ONE_PLAYER_MENU_RESTART);
-                
-                initGame(&b, &p1, &p2);
-                
-            // Restart button released (2 players mode)
-            } else if (isBitSet(menu_buttons_held, TWO_PLAYERS_MENU_RESTART)) {
-                
-                //menu_buttons_released = unsetBit(menu_buttons_released, TWO_PLAYERS_MENU_RESTART);
-                menu_buttons_held = unsetBit(menu_buttons_held, TWO_PLAYERS_MENU_RESTART);
-                
-                initGame(&b, &p1, &p2);
-                
-            // Back to main menu button released (1 player mode)
-            } else if (isBitSet(menu_buttons_held, ONE_PLAYER_MENU_BACK)) {
-                
-                //menu_buttons_released = unsetBit(menu_buttons_released, ONE_PLAYER_MENU_BACK);
-                menu_buttons_held = unsetBit(menu_buttons_held, ONE_PLAYER_MENU_BACK);
-                
-                screen = MAIN_MENU;
-                
-                showSplash();
-                
-                // Display the main menu
-                showMenu(screen);
-                
-            // Back to main menu button released (2 players mode)
-            } else if (isBitSet(menu_buttons_held, TWO_PLAYERS_MENU_BACK)) {
-                
-                //menu_buttons_released = unsetBit(menu_buttons_released, TWO_PLAYERS_MENU_BACK);
-                menu_buttons_held = unsetBit(menu_buttons_held, TWO_PLAYERS_MENU_BACK);
-                
-                screen = MAIN_MENU;
-                
-                showSplash();
-                
-                // Display the main menu
-                showMenu(screen);
+                // 2 players mode button pressed in the main menu
+                if (screen == MAIN_MENU && !isBitSet(menu_buttons_pressed, MAIN_MENU_TWO_PLAYERS) && !isBitSet(menu_buttons_held, MAIN_MENU_TWO_PLAYERS) && !isBitSet(menu_buttons_released, MAIN_MENU_TWO_PLAYERS)) {
+                    
+                    menu_buttons_pressed = setBit(menu_buttons_pressed, MAIN_MENU_TWO_PLAYERS);
+                    
+                // 2 players mode button held in the main menu
+                } else if (screen == MAIN_MENU && isBitSet(menu_buttons_pressed, MAIN_MENU_TWO_PLAYERS)) {
+                    
+                    menu_buttons_held = setBit(menu_buttons_held, MAIN_MENU_TWO_PLAYERS);
+                    menu_buttons_pressed = unsetBit(menu_buttons_pressed, MAIN_MENU_TWO_PLAYERS);
+                    
+                // Back to main menu button pressed (1 player mode)
+                } else if (screen == ONE_PLAYER_GAME && !isBitSet(menu_buttons_pressed, ONE_PLAYER_MENU_BACK) && !isBitSet(menu_buttons_held, ONE_PLAYER_MENU_BACK) && !isBitSet(menu_buttons_released, ONE_PLAYER_MENU_BACK)) {
+                    
+                    menu_buttons_pressed = setBit(menu_buttons_pressed, ONE_PLAYER_MENU_BACK);
+                    
+                // Back to main menu button held (1 player mode)
+                } else if (screen == ONE_PLAYER_GAME && isBitSet(menu_buttons_pressed, ONE_PLAYER_MENU_BACK)) {
+                    
+                    menu_buttons_held = setBit(menu_buttons_held, ONE_PLAYER_MENU_BACK);
+                    menu_buttons_pressed = unsetBit(menu_buttons_pressed, ONE_PLAYER_MENU_BACK);
+                    
+                // Back to main menu button pressed (2 players mode)
+                } else if (screen == TWO_PLAYERS_GAME && !isBitSet(menu_buttons_pressed, TWO_PLAYERS_MENU_BACK) && !isBitSet(menu_buttons_held, TWO_PLAYERS_MENU_BACK) && !isBitSet(menu_buttons_released, TWO_PLAYERS_MENU_BACK)) {
+                    
+                    menu_buttons_pressed = setBit(menu_buttons_pressed, TWO_PLAYERS_MENU_BACK);
+                    
+                // Back to main menu button held (2 players mode)
+                } else if (screen == TWO_PLAYERS_GAME && isBitSet(menu_buttons_pressed, TWO_PLAYERS_MENU_BACK)) {
+                    
+                    menu_buttons_held = setBit(menu_buttons_held, TWO_PLAYERS_MENU_BACK);
+                    menu_buttons_pressed = unsetBit(menu_buttons_pressed, TWO_PLAYERS_MENU_BACK);
+                    
+                }
                 
             }
+            
+        // One player mode button released (main menu)
+        } else if (isBitSet(menu_buttons_held, MAIN_MENU_ONE_PLAYER)) {
+            
+            menu_buttons_released = setBit(menu_buttons_released, MAIN_MENU_ONE_PLAYER);
+            menu_buttons_held = unsetBit(menu_buttons_held, MAIN_MENU_ONE_PLAYER);
+            
+        // Two players mode button released (main menu)
+        } else if (isBitSet(menu_buttons_held, MAIN_MENU_TWO_PLAYERS)) {
+            
+            menu_buttons_released = setBit(menu_buttons_released, MAIN_MENU_TWO_PLAYERS);
+            menu_buttons_held = unsetBit(menu_buttons_held, MAIN_MENU_TWO_PLAYERS);
+            
+        // Restart button released (1 player mode)
+        } else if (isBitSet(menu_buttons_held, ONE_PLAYER_MENU_RESTART)) {
+            
+            menu_buttons_released = setBit(menu_buttons_released, ONE_PLAYER_MENU_RESTART);
+            menu_buttons_held = unsetBit(menu_buttons_held, ONE_PLAYER_MENU_RESTART);
+            
+        // Restart button released (2 players mode)
+        } else if (isBitSet(menu_buttons_held, TWO_PLAYERS_MENU_RESTART)) {
+            
+            menu_buttons_released = setBit(menu_buttons_released, TWO_PLAYERS_MENU_RESTART);
+            menu_buttons_held = unsetBit(menu_buttons_held, TWO_PLAYERS_MENU_RESTART);
+            
+        // Back to main menu button released (1 player mode)
+        } else if (isBitSet(menu_buttons_held, ONE_PLAYER_MENU_BACK)) {
+            
+            menu_buttons_released = setBit(menu_buttons_released, ONE_PLAYER_MENU_BACK);
+            menu_buttons_held = unsetBit(menu_buttons_held, ONE_PLAYER_MENU_BACK);
+            
+        // Back to main menu button released (2 players mode)
+        } else if (isBitSet(menu_buttons_held, TWO_PLAYERS_MENU_BACK)) {
+            
+            menu_buttons_released = setBit(menu_buttons_released, TWO_PLAYERS_MENU_BACK);
+            menu_buttons_held = unsetBit(menu_buttons_held, TWO_PLAYERS_MENU_BACK);
+            
+        // One player mode button release ended (main menu)
+        } else if (isBitSet(menu_buttons_released, MAIN_MENU_ONE_PLAYER)) {
+            
+            menu_buttons_released = unsetBit(menu_buttons_released, MAIN_MENU_ONE_PLAYER);
+            
+        // Two players mode button release ended (main menu)
+        } else if (isBitSet(menu_buttons_released, MAIN_MENU_TWO_PLAYERS)) {
+            
+            menu_buttons_released = unsetBit(menu_buttons_released, MAIN_MENU_TWO_PLAYERS);
+            
+        // Restart button release ended (1 player mode)
+        } else if (isBitSet(menu_buttons_released, ONE_PLAYER_MENU_RESTART)) {
+            
+            menu_buttons_released = unsetBit(menu_buttons_released, ONE_PLAYER_MENU_RESTART);
+            
+        // Restart button released ended (2 players mode)
+        } else if (isBitSet(menu_buttons_released, TWO_PLAYERS_MENU_RESTART)) {
+            
+            menu_buttons_released = unsetBit(menu_buttons_released, TWO_PLAYERS_MENU_RESTART);
+            
+        // Back to main menu button release ended (1 player mode)
+        } else if (isBitSet(menu_buttons_released, ONE_PLAYER_MENU_BACK)) {
+            
+            menu_buttons_released = unsetBit(menu_buttons_released, ONE_PLAYER_MENU_BACK);
+            
+        // Back to main menu button release ended (2 players mode)
+        } else if (isBitSet(menu_buttons_released, TWO_PLAYERS_MENU_BACK)) {
+            
+            menu_buttons_released = unsetBit(menu_buttons_released, TWO_PLAYERS_MENU_BACK);
+            
+        }
+        
+        // One player mode button released
+        if (isBitSet(menu_buttons_released, MAIN_MENU_ONE_PLAYER)) {
+            
+            screen = ONE_PLAYER_GAME;
+            
+            initGameField();
+            
+            initGame(&b, &p1, &p2);
+            
+            showMenu(screen);
+            
+        } else if (isBitSet(menu_buttons_released, MAIN_MENU_TWO_PLAYERS)) {
+            
+            screen = TWO_PLAYERS_GAME;
+            
+            initGameField();
+            
+            initGame(&b, &p1, &p2);
+            
+            showMenu(screen);
+                
+        // Restart button released (1 player mode)
+        } else if (isBitSet(menu_buttons_released, ONE_PLAYER_MENU_RESTART)) {
+            
+            initGame(&b, &p1, &p2);
+            
+        // Restart button released (2 players mode)
+        } else if (isBitSet(menu_buttons_released, TWO_PLAYERS_MENU_RESTART)) {
+            
+            initGame(&b, &p1, &p2);
+            
+        // Back to main menu button released (1 player mode)
+        } else if (isBitSet(menu_buttons_released, ONE_PLAYER_MENU_BACK)) {
+            
+            screen = MAIN_MENU;
+            
+            showSplash();
+            
+            // Display the main menu
+            showMenu(screen);
+            
+        // Back to main menu button released (2 players mode)
+        } else if (isBitSet(menu_buttons_released, TWO_PLAYERS_MENU_BACK)) {
+            
+            screen = MAIN_MENU;
+            
+            showSplash();
+            
+            // Display the main menu
+            showMenu(screen);
+            
+        // 
+        } else if (screen == ONE_PLAYER_GAME || screen == TWO_PLAYERS_GAME) {
             
             // One player mode (VS CPU)
             if (screen == ONE_PLAYER_GAME) {
@@ -642,77 +740,7 @@ int main(void) {
             // Update the oam memories of the main screen
             oamUpdate(&oamMain);
             
-        // We are in the main menu
-        } else {
-            
-            if(keysHeld() & KEY_TOUCH) {
-                
-                touchRead(&touch);
-                
-                // The user selected one player mode in the main menu
-                if (touch.px >= 52 && touch.px <= 211 && touch.py >= 53 && touch.py <= 73) {
-                    
-                    // Button pressed
-                    if (!isBitSet(menu_buttons_pressed, MAIN_MENU_ONE_PLAYER) && !isBitSet(menu_buttons_held, MAIN_MENU_ONE_PLAYER) && !isBitSet(menu_buttons_released, MAIN_MENU_ONE_PLAYER)) {
-                        
-                        menu_buttons_pressed = setBit(menu_buttons_pressed, MAIN_MENU_ONE_PLAYER);
-                        
-                    // Button held
-                    } else if (isBitSet(menu_buttons_pressed, MAIN_MENU_ONE_PLAYER)) {
-                        
-                        menu_buttons_held = setBit(menu_buttons_held, MAIN_MENU_ONE_PLAYER);
-                        menu_buttons_pressed = unsetBit(menu_buttons_pressed, MAIN_MENU_ONE_PLAYER);
-                        
-                    }
-                    
-                // The user selected two players mode in the main menu
-                } else if (touch.px >= 52 && touch.px <= 211 && touch.py >= 77 && touch.py <= 97) {
-                    
-                    // Button pressed
-                    if (!isBitSet(menu_buttons_pressed, MAIN_MENU_TWO_PLAYERS) && !isBitSet(menu_buttons_held, MAIN_MENU_TWO_PLAYERS) && !isBitSet(menu_buttons_released, MAIN_MENU_TWO_PLAYERS)) {
-                        
-                        menu_buttons_pressed = setBit(menu_buttons_pressed, MAIN_MENU_TWO_PLAYERS);
-                        
-                    // Button held
-                    } else if (isBitSet(menu_buttons_pressed, MAIN_MENU_TWO_PLAYERS)) {
-                        
-                        menu_buttons_held = setBit(menu_buttons_held, MAIN_MENU_TWO_PLAYERS);
-                        menu_buttons_pressed = unsetBit(menu_buttons_pressed, MAIN_MENU_TWO_PLAYERS);
-                        
-                    }
-                    
-                }
-                
-            // One player mode button released
-            } else if (isBitSet(menu_buttons_held, MAIN_MENU_ONE_PLAYER)) {
-                
-                //setBit(menu_buttons_released, MAIN_MENU_ONE_PLAYER);
-                menu_buttons_held = unsetBit(menu_buttons_held, MAIN_MENU_ONE_PLAYER);
-                
-                screen = ONE_PLAYER_GAME;
-                
-                initGameField();
-                
-                initGame(&b, &p1, &p2);
-                
-                showMenu(screen);
-                
-            } else if (isBitSet(menu_buttons_held, MAIN_MENU_TWO_PLAYERS)) {
-                
-                //setBit(menu_buttons_released, MAIN_MENU_TWO_PLAYERS);
-                menu_buttons_held = unsetBit(menu_buttons_held, MAIN_MENU_TWO_PLAYERS);
-                
-                screen = TWO_PLAYERS_GAME;
-                
-                initGameField();
-                
-                initGame(&b, &p1, &p2);
-                
-                showMenu(screen);
-                
-            }
-            
-        }
+        } 
         
         // Play looping ambulance sound effect out of left speaker if A button is pressed
 		if ( keys_pressed & KEY_A ) {
