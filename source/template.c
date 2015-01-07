@@ -466,20 +466,38 @@ int main(void) {
             
             screen = MAIN_MENU;
             
+            // Clear all the sprites of the game
+            oamClear(&oamMain, 0, 128);
+            
             showSplash();
             
             // Display the main menu
             showMenu(screen);
+            
+            // Wait for a vertical blank interrupt
+            swiWaitForVBlank();
+            
+            // Update the oam memories of the main screen
+            oamUpdate(&oamMain);
             
         // Back to main menu button released (2 players mode)
         } else if (isBitSet(menu_buttons_released, TWO_PLAYERS_MENU_BACK)) {
             
             screen = MAIN_MENU;
             
+            // Clear all the sprites of the game
+            oamClear(&oamMain, 0, 128);
+            
             showSplash();
             
             // Display the main menu
             showMenu(screen);
+            
+            // Wait for a vertical blank interrupt
+            swiWaitForVBlank();
+            
+            // Update the oam memories of the main screen
+            oamUpdate(&oamMain);
             
         // 
         } else if (screen == ONE_PLAYER_GAME || screen == TWO_PLAYERS_GAME) {
