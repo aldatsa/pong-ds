@@ -104,6 +104,7 @@ int showSplash() {
 	bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
     decompress(splashBitmap, BG_GFX,  LZ77Vram);
     
+    return 0;
 }
 
 //---------------------------------------------------------------------
@@ -132,6 +133,8 @@ int showMenu(int id) {
             decompress(main_menuBitmap, BG_GFX_SUB,  LZ77Vram);
         
     }
+    
+    return 0;
 
 }
 
@@ -144,6 +147,7 @@ int initGameField() {
     bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
     decompress(backgroundBitmap, BG_GFX,  LZ77Vram);
     
+    return 0;
 }
 
 //---------------------------------------------------------------------
