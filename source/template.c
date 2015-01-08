@@ -26,6 +26,7 @@ License: GPL v3
 #include <two_p_game_menu.h>
 
 #define PI 3.14159265
+#define INITIAL_ANGLE 45
 
 typedef struct {
    double x;
@@ -160,7 +161,7 @@ int initGame(ball *b, paddle *p1, paddle *p2) {
     b->x = SCREEN_WIDTH / 2 - 1 - 4;
     b->y = SCREEN_HEIGHT / 2 - 1 - 4;
     b->speed = 1.0;
-    b->angle = 225;
+    b->angle = INITIAL_ANGLE;
     b->height = 8;
     b->width = 8;
     
@@ -189,7 +190,7 @@ int main(void) {
     int keys_pressed, keys_held, keys_released;
     
     // Ball
-    ball b = {SCREEN_WIDTH / 2 - 1 - 4, SCREEN_HEIGHT / 2 - 1 - 4, 1.0, 225, 8, 8};
+    ball b = {SCREEN_WIDTH / 2 - 1 - 4, SCREEN_HEIGHT / 2 - 1 - 4, 1.0, INITIAL_ANGLE, 8, 8};
     
     // Left paddle
     paddle p1 = {0, SCREEN_HEIGHT / 2 - 1 - 16, 1, 32, 8, 0};
@@ -658,7 +659,7 @@ int main(void) {
                 b.x = SCREEN_WIDTH / 2 - 1 - b.width / 2;
                 b.y = SCREEN_HEIGHT / 2 - 1 - b.height / 2;
                 b.speed = 1;
-                b.angle = 225;
+                b.angle = INITIAL_ANGLE + 180;
                 
             // Right border of the screen
             } else if (b.x >= SCREEN_WIDTH - 1) {
@@ -667,8 +668,8 @@ int main(void) {
                 
                 b.x = SCREEN_WIDTH / 2 - 1 - b.width / 2;
                 b.y = SCREEN_HEIGHT / 2 - 1 - b.height / 2;
-                b.speed = -1;
-                b.angle = 225;
+                b.speed = 1;
+                b.angle = INITIAL_ANGLE;
                 
             }
             
