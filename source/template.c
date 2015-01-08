@@ -261,9 +261,6 @@ int main(void) {
 		255,	// panning
 	};
     
-    // sound effect handle (for cancelling it later)
-	mm_sfxhand amb = 0;
-    
 	while(1) {
         
 		scanKeys();
