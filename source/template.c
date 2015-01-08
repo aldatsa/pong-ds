@@ -160,7 +160,7 @@ int initGame(ball *b, paddle *p1, paddle *p2) {
     b->x = SCREEN_WIDTH / 2 - 1 - 4;
     b->y = SCREEN_HEIGHT / 2 - 1 - 4;
     b->speed = 1.0;
-    b->angle = 45;
+    b->angle = 225;
     b->height = 8;
     b->width = 8;
     
@@ -189,7 +189,7 @@ int main(void) {
     int keys_pressed, keys_held, keys_released;
     
     // Ball
-    ball b = {SCREEN_WIDTH / 2 - 1 - 4, SCREEN_HEIGHT / 2 - 1 - 4, 1.0, 45, 8, 8};
+    ball b = {SCREEN_WIDTH / 2 - 1 - 4, SCREEN_HEIGHT / 2 - 1 - 4, 1.0, 225, 8, 8};
     
     // Left paddle
     paddle p1 = {0, SCREEN_HEIGHT / 2 - 1 - 16, 1, 32, 8, 0};
@@ -629,53 +629,49 @@ int main(void) {
                 
             }
             
-            // Bottom border of the screen
+            // Bottom of the screen
             if (b.y + b.speed * sin(b.angle * PI / 180) >= SCREEN_HEIGHT - 1 - b.height) {
                 
                 b.angle = 180 - (b.angle - 180);
                 
-            }
-            
-            /*
-            // Bottom and top borders of the screen
-            if (b.y == 0 || b.y == SCREEN_HEIGHT - 1 - b.height) {
-                b.speed_y = -1 * b.speed_y;
-            }
-            
+            // Top of the screen
+            } else if (b.y + b.speed * sin(b.angle * PI / 180) <= 0) {
+                
+                // b.angle = 0 - (b.angle - 0)
+                b.angle = -b.angle;
+                
+            // Left paddle collision detection
+            } else if (b.x <= p1.x + p1.width && b.y > p1.y - b.height && b.y < p1.y + p1.height + b.height) {
+                
+                b.angle = 90 - (b.angle - 90);
+                
+            // Right paddle collision detection
+            } else if (b.x >= p2.x - p2.width && b.y > p2.y - b.height && b.y < p2.y + p2.height + b.height) {
+                
+                b.angle = 270 - (b.angle - 270);
+                
             // Left border of the screen
-            if (b.x == 0) {
+            } else if (b.x <= 0) {
                 
                 p2.score = p2.score + 1;
                 
                 b.x = SCREEN_WIDTH / 2 - 1 - b.width / 2;
                 b.y = SCREEN_HEIGHT / 2 - 1 - b.height / 2;
-                b.speed_x = 1;
-                b.speed_y = 1;
+                b.speed = 1;
+                b.angle = 225;
                 
-            }
-            
             // Right border of the screen
-            if (b.x == SCREEN_WIDTH - 1) {
+            } else if (b.x >= SCREEN_WIDTH - 1) {
                 
                 p1.score = p1.score + 1;
                 
                 b.x = SCREEN_WIDTH / 2 - 1 - b.width / 2;
                 b.y = SCREEN_HEIGHT / 2 - 1 - b.height / 2;
-                b.speed_x = -1;
-                b.speed_y = 1;
+                b.speed = -1;
+                b.angle = 225;
                 
             }
             
-            // Left paddle collision detection
-            if (b.x == p1.x + p1.width && b.y > p1.y - b.height && b.y < p1.y + p1.height + b.height) {
-                b.speed_x = -1 * b.speed_x;
-            }
-            
-            // Right paddle collision detection
-            if (b.x == p2.x - p2.width && b.y > p2.y - b.height && b.y < p2.y + p2.height + b.height) {
-                b.speed_x = -1 * b.speed_x;
-            }
-            */
             // Update the position of the ball
             b.x = b.x + b.speed * cos(b.angle * PI / 180);
             b.y = b.y + b.speed * sin(b.angle * PI / 180);
