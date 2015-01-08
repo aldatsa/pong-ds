@@ -25,11 +25,13 @@ License: GPL v3
 #include <one_p_game_menu.h>
 #include <two_p_game_menu.h>
 
+#define PI 3.14159265
+
 typedef struct {
-   int x;
-   int y;
-   int speed_x;
-   int speed_y;
+   double x;
+   double y;
+   double speed;
+   int angle;
    int height;
    int width;
 } ball;
@@ -157,8 +159,8 @@ int initGame(ball *b, paddle *p1, paddle *p2) {
     
     b->x = SCREEN_WIDTH / 2 - 1 - 4;
     b->y = SCREEN_HEIGHT / 2 - 1 - 4;
-    b->speed_x = 1;
-    b->speed_y = 1;
+    b->speed = 1.0;
+    b->angle = 45;
     b->height = 8;
     b->width = 8;
     
@@ -187,7 +189,7 @@ int main(void) {
     int keys_pressed, keys_held, keys_released;
     
     // Ball
-    ball b = {SCREEN_WIDTH / 2 - 1 - 4, SCREEN_HEIGHT / 2 - 1 - 4, 1, 1, 8, 8};
+    ball b = {SCREEN_WIDTH / 2 - 1 - 4, SCREEN_HEIGHT / 2 - 1 - 4, 1.0, 45, 8, 8};
     
     // Left paddle
     paddle p1 = {0, SCREEN_HEIGHT / 2 - 1 - 16, 1, 32, 8, 0};
@@ -508,7 +510,7 @@ int main(void) {
                 // Artificial intelligence for the paddle controlled by the CPU (only in one player mode)
                 
                 // If the ball is moving towards the paddle controlled by the CPU
-                if (b.speed_x < 0) {
+                if (b.speed * cos(b.angle * PI / 180) < 0) {
                     
                     // If the ball is above the paddle
                     if (b.y < p1.y) {
@@ -626,7 +628,7 @@ int main(void) {
                 }
                 
             }
-            
+            /*
             // Bottom and top borders of the screen
             if (b.y == 0 || b.y == SCREEN_HEIGHT - 1 - b.height) {
                 b.speed_y = -1 * b.speed_y;
@@ -665,15 +667,15 @@ int main(void) {
             if (b.x == p2.x - p2.width && b.y > p2.y - b.height && b.y < p2.y + p2.height + b.height) {
                 b.speed_x = -1 * b.speed_x;
             }
-            
+            */
             // Update the position of the ball
-            b.x = b.x + b.speed_x;
-            b.y = b.y + b.speed_y;
+            b.x = b.x + b.speed * cos(b.angle * PI / 180);
+            b.y = b.y + b.speed * sin(b.angle * PI / 180);
             
             // Set the oam entry for the ball
             oamSet(&oamMain, //main graphics engine context
                 0,           //oam index (0 to 127)  
-                b.x, b.y,   //x and y pixle location of the sprite
+                (int) b.x, (int) b.y,   //x and y pixle location of the sprite
                 0,                    //priority, lower renders last (on top)
                 0,					  //this is the palette index if multiple palettes or the alpha value if bmp sprite	
                 SpriteSize_8x8,     
