@@ -628,6 +628,14 @@ int main(void) {
                 }
                 
             }
+            
+            // Bottom border of the screen
+            if (b.y + b.speed * sin(b.angle * PI / 180) >= SCREEN_HEIGHT - 1 - b.height) {
+                
+                b.angle = 180 - (b.angle - 180);
+                
+            }
+            
             /*
             // Bottom and top borders of the screen
             if (b.y == 0 || b.y == SCREEN_HEIGHT - 1 - b.height) {
