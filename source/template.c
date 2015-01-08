@@ -658,7 +658,7 @@ int main(void) {
                 
                 b.x = SCREEN_WIDTH / 2 - 1 - b.width / 2;
                 b.y = SCREEN_HEIGHT / 2 - 1 - b.height / 2;
-                b.speed = 1;
+                
                 b.angle = INITIAL_ANGLE + 180;
                 
             // Right border of the screen
@@ -668,7 +668,7 @@ int main(void) {
                 
                 b.x = SCREEN_WIDTH / 2 - 1 - b.width / 2;
                 b.y = SCREEN_HEIGHT / 2 - 1 - b.height / 2;
-                b.speed = 1;
+                
                 b.angle = INITIAL_ANGLE;
                 
             }
