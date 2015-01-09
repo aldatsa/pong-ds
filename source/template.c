@@ -21,6 +21,7 @@ License: GPL v3
 #include "background.h"
 #include <digits.h>
 #include <splash.h>
+#include <language_menu.h>
 #include <main_menu.h>
 #include <one_p_game_menu.h>
 #include <two_p_game_menu.h>
@@ -66,9 +67,10 @@ enum menu_button_flags {
 unsigned int screen;
 
 enum screen_options {
-    MAIN_MENU = 0,
-    ONE_PLAYER_GAME = 1,
-    TWO_PLAYERS_GAME = 2
+    LANGUAGE_MENU = 0,
+    MAIN_MENU = 1,
+    ONE_PLAYER_GAME = 2,
+    TWO_PLAYERS_GAME = 3
 };
 
 bool isBitSet(unsigned int value, unsigned int bit_flag) {
@@ -121,15 +123,19 @@ int showMenu(int id) {
 	
     switch (id) {
         
-        case 0:
+        case LANGUAGE_MENU:
+            decompress(language_menuBitmap, BG_GFX_SUB,  LZ77Vram);
+            break;
+        
+        case MAIN_MENU:
             decompress(main_menuBitmap, BG_GFX_SUB,  LZ77Vram);
             break;
         
-        case 1:
+        case ONE_PLAYER_GAME:
             decompress(one_p_game_menuBitmap, BG_GFX_SUB,  LZ77Vram);
             break;
         
-        case 2:
+        case TWO_PLAYERS_GAME:
             decompress(two_p_game_menuBitmap, BG_GFX_SUB,  LZ77Vram);
             break;
         
