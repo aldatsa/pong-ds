@@ -246,7 +246,7 @@ int main(void) {
     vramSetBankB(VRAM_B_MAIN_SPRITE);
     vramSetBankC(VRAM_C_SUB_BG);
     
-    screen = MAIN_MENU;
+    screen = LANGUAGE_MENU;
     
     showSplash();
     
