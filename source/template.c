@@ -180,6 +180,40 @@ int initGame(ball *b, paddle *p1, paddle *p2) {
     p2->width = 8;
     p2->score = 0;
     
+    // Set the oam entry for the score of the first player
+    oamSet(&oamMain,                    // main graphics engine context
+           3,                           // oam index (0 to 127)
+           SCREEN_WIDTH / 2 - 40,       // x location of the sprite
+           8,                           // y location of the sprite
+           0,                           // priority, lower renders last (on top)
+           0,                           // this is the palette index if multiple palettes or the alpha value if bmp sprite
+           SpriteSize_32x32,
+           SpriteColorFormat_256Color,
+           sprite_gfx_mem[p1->score],    // pointer to the loaded graphics
+           -1,                          // sprite rotation data
+           false,                       // double the size when rotating?
+           false,                       // hide the sprite?
+           false,                       // vflip
+           false,                       // hflip
+           false);                      // apply mosaic
+
+    // Set the oam entry for the score of the second player
+    oamSet(&oamMain,                    // main graphics engine context
+           4,                           // oam index (0 to 127)
+           SCREEN_WIDTH / 2 + 8,       // x location of the sprite
+           8,                           // y location of the sprite
+           0,                           // priority, lower renders last (on top)
+           0,                           // this is the palette index if multiple palettes or the alpha value if bmp sprite
+           SpriteSize_32x32,
+           SpriteColorFormat_256Color,
+           sprite_gfx_mem[p2->score],    // pointer to the loaded graphics
+           -1,                          // sprite rotation data
+           false,                       // double the size when rotating?
+           false,                       // hide the sprite?
+           false,                       // vflip
+           false,                       // hflip
+           false);                      // apply mosaic
+    
     return 0;
 }
 
@@ -649,6 +683,23 @@ int main(void) {
                 
                 p2.score = p2.score + 1;
                 
+                // Set the oam entry for the score of the second player
+                oamSet(&oamMain,                    // main graphics engine context
+                        4,                           // oam index (0 to 127)
+                        SCREEN_WIDTH / 2 + 8,       // x location of the sprite
+                        8,                           // y location of the sprite
+                        0,                           // priority, lower renders last (on top)
+                        0,                           // this is the palette index if multiple palettes or the alpha value if bmp sprite
+                        SpriteSize_32x32,
+                        SpriteColorFormat_256Color,
+                        sprite_gfx_mem[p2.score],    // pointer to the loaded graphics
+                        -1,                          // sprite rotation data
+                        false,                       // double the size when rotating?
+                        false,                       // hide the sprite?
+                        false,                       // vflip
+                        false,                       // hflip
+                        false);                      // apply mosaic
+                
                 b.x = SCREEN_WIDTH / 2 - 1 - b.width / 2;
                 b.y = SCREEN_HEIGHT / 2 - 1 - b.height / 2;
                 
@@ -658,6 +709,23 @@ int main(void) {
             } else if (b.x >= SCREEN_WIDTH - 1) {
                 
                 p1.score = p1.score + 1;
+                
+                // Set the oam entry for the score of the first player
+                oamSet(&oamMain,                    // main graphics engine context
+                        3,                           // oam index (0 to 127)
+                        SCREEN_WIDTH / 2 - 40,       // x location of the sprite
+                        8,                           // y location of the sprite
+                        0,                           // priority, lower renders last (on top)
+                        0,                           // this is the palette index if multiple palettes or the alpha value if bmp sprite
+                        SpriteSize_32x32,
+                        SpriteColorFormat_256Color,
+                        sprite_gfx_mem[p1.score],    // pointer to the loaded graphics
+                        -1,                          // sprite rotation data
+                        false,                       // double the size when rotating?
+                        false,                       // hide the sprite?
+                        false,                       // vflip
+                        false,                       // hflip
+                        false);                      // apply mosaic
                 
                 b.x = SCREEN_WIDTH / 2 - 1 - b.width / 2;
                 b.y = SCREEN_HEIGHT / 2 - 1 - b.height / 2;
@@ -717,40 +785,6 @@ int main(void) {
                 false, false, //vflip, hflip
                 false	//apply mosaic
                 );
-            
-            // Set the oam entry for the score of the first player
-            oamSet(&oamMain,                    // main graphics engine context
-                   3,                           // oam index (0 to 127)
-                   SCREEN_WIDTH / 2 - 40,       // x location of the sprite
-                   8,                           // y location of the sprite
-                   0,                           // priority, lower renders last (on top)
-                   0,                           // this is the palette index if multiple palettes or the alpha value if bmp sprite
-                   SpriteSize_32x32,
-                   SpriteColorFormat_256Color,
-                   sprite_gfx_mem[p1.score],    // pointer to the loaded graphics
-                   -1,                          // sprite rotation data
-                   false,                       // double the size when rotating?
-                   false,                       // hide the sprite?
-                   false,                       // vflip
-                   false,                       // hflip
-                   false);                      // apply mosaic
-    
-            // Set the oam entry for the score of the second player
-            oamSet(&oamMain,                    // main graphics engine context
-                   4,                           // oam index (0 to 127)
-                   SCREEN_WIDTH / 2 + 8,       // x location of the sprite
-                   8,                           // y location of the sprite
-                   0,                           // priority, lower renders last (on top)
-                   0,                           // this is the palette index if multiple palettes or the alpha value if bmp sprite
-                   SpriteSize_32x32,
-                   SpriteColorFormat_256Color,
-                   sprite_gfx_mem[p2.score],    // pointer to the loaded graphics
-                   -1,                          // sprite rotation data
-                   false,                       // double the size when rotating?
-                   false,                       // hide the sprite?
-                   false,                       // vflip
-                   false,                       // hflip
-                   false);                      // apply mosaic
             
             // Wait for a vertical blank interrupt
             swiWaitForVBlank();
