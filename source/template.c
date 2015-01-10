@@ -24,10 +24,13 @@ License: GPL v3
 #include <language_menu.h>
 #include <main_menu_en.h>
 #include <main_menu_eu.h>
+#include <main_menu_es.h>
 #include <one_p_game_menu_en.h>
 #include <one_p_game_menu_eu.h>
+#include <one_p_game_menu_es.h>
 #include <two_p_game_menu_en.h>
 #include <two_p_game_menu_eu.h>
+#include <two_p_game_menu_es.h>
 
 #define PI 3.14159265
 #define INITIAL_ANGLE 45
@@ -149,6 +152,8 @@ int showMenu(int id, unsigned int language) {
                 decompress(main_menu_enBitmap, BG_GFX_SUB,  LZ77Vram);
             } else if (language == EU) {
                 decompress(main_menu_euBitmap, BG_GFX_SUB,  LZ77Vram);
+            } else if (language == ES) {
+                decompress(main_menu_esBitmap, BG_GFX_SUB,  LZ77Vram);
             }
             break;
         
@@ -157,6 +162,8 @@ int showMenu(int id, unsigned int language) {
                 decompress(one_p_game_menu_enBitmap, BG_GFX_SUB,  LZ77Vram);
             } else if (language == EU) {
                 decompress(one_p_game_menu_euBitmap, BG_GFX_SUB,  LZ77Vram);
+            } else if (language == ES) {
+                decompress(one_p_game_menu_esBitmap, BG_GFX_SUB,  LZ77Vram);
             }
             break;
         
@@ -165,6 +172,8 @@ int showMenu(int id, unsigned int language) {
                 decompress(two_p_game_menu_enBitmap, BG_GFX_SUB,  LZ77Vram);
             } else if (language == EU) {
                 decompress(two_p_game_menu_euBitmap, BG_GFX_SUB,  LZ77Vram);
+            } else if (language == ES) {
+                decompress(two_p_game_menu_esBitmap, BG_GFX_SUB,  LZ77Vram);
             }
             break;
         
@@ -450,6 +459,22 @@ int main(void) {
                     
                 }
                 
+            // The user tapped the second button
+            } else if (touch.px >= 52 && touch.px <= 211 && touch.py >= 103 && touch.py <= 123) {
+                
+                // Spanish button pressed in the language menu
+                if (screen == LANGUAGE_MENU && !isBitSet(menu_buttons_pressed, LANGUAGE_MENU_ESPANOL) && !isBitSet(menu_buttons_held, LANGUAGE_MENU_ESPANOL) && !isBitSet(menu_buttons_released, LANGUAGE_MENU_ESPANOL)) {
+                    
+                    menu_buttons_pressed = setBit(menu_buttons_pressed, LANGUAGE_MENU_ESPANOL);
+                    
+                // Spanish button held in the language menu
+                } else if (screen == LANGUAGE_MENU && isBitSet(menu_buttons_pressed, LANGUAGE_MENU_ESPANOL)) {
+                    
+                    menu_buttons_held = setBit(menu_buttons_held, LANGUAGE_MENU_ESPANOL);
+                    menu_buttons_pressed = unsetBit(menu_buttons_pressed, LANGUAGE_MENU_ESPANOL);
+                    
+                }
+                
             }
             
         // English button released (language menu)
@@ -463,6 +488,12 @@ int main(void) {
             
             menu_buttons_released = setBit(menu_buttons_released, LANGUAGE_MENU_EUSKARA);
             menu_buttons_held = unsetBit(menu_buttons_held, LANGUAGE_MENU_EUSKARA);
+            
+        // Spanish button released (language menu)
+        } else if (isBitSet(menu_buttons_held, LANGUAGE_MENU_ESPANOL)) {
+            
+            menu_buttons_released = setBit(menu_buttons_released, LANGUAGE_MENU_ESPANOL);
+            menu_buttons_held = unsetBit(menu_buttons_held, LANGUAGE_MENU_ESPANOL);
             
         // One player mode button released (main menu)
         } else if (isBitSet(menu_buttons_held, MAIN_MENU_ONE_PLAYER)) {
@@ -510,6 +541,11 @@ int main(void) {
             
             menu_buttons_released = unsetBit(menu_buttons_released, LANGUAGE_MENU_EUSKARA);
             
+        // Spanish button release ended (language menu)
+        } else if (isBitSet(menu_buttons_released, LANGUAGE_MENU_ESPANOL)) {
+            
+            menu_buttons_released = unsetBit(menu_buttons_released, LANGUAGE_MENU_ESPANOL);
+            
         // One player mode button release ended (main menu)
         } else if (isBitSet(menu_buttons_released, MAIN_MENU_ONE_PLAYER)) {
             
@@ -550,10 +586,18 @@ int main(void) {
             
             showMenu(screen, language);
             
-        // English button released
+        // Basque button released
         } else if (isBitSet(menu_buttons_released, LANGUAGE_MENU_EUSKARA)) {
             
             language = EU;
+            screen = MAIN_MENU;
+            
+            showMenu(screen, language);
+            
+        // Spanish button released
+        } else if (isBitSet(menu_buttons_released, LANGUAGE_MENU_ESPANOL)) {
+            
+            language = ES;
             screen = MAIN_MENU;
             
             showMenu(screen, language);
