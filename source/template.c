@@ -787,6 +787,19 @@ int main(void) {
                 
             }
             
+            /*
+             *         270
+             *          |
+             *          |
+             *          |
+             * 180 ----------- 0
+             *          |
+             *          |
+             *          |
+             *         90
+             *
+             */
+            
             // Bottom of the screen
             if (b.y + b.speed * sin(b.angle * PI / 180) >= SCREEN_HEIGHT - 1 - b.height) {
                 
@@ -801,14 +814,26 @@ int main(void) {
             // Left paddle collision detection
             } else if (b.x <= p1.x + p1.width && b.y > p1.y - b.height && b.y < p1.y + p1.height + b.height) {
                 
-                b.angle = 90 - (b.angle - 90);
+                int hit_y = b.y - p1.y + b.height;
+                
+                // The return angle is the specular image of the hit angle
+                // b.angle = 90 - (b.angle - 90);
+                
+                // The return angle is going to be between 300 and 60 degrees depending on the hit position
+                b.angle = (int) 300 + (120 * hit_y / 48.0);
                 
                 mmEffectEx(&boom);
                 
             // Right paddle collision detection
             } else if (b.x >= p2.x - p2.width && b.y > p2.y - b.height && b.y < p2.y + p2.height + b.height) {
                 
-                b.angle = 270 - (b.angle - 270);
+                int hit_y = b.y - p2.y + b.height;
+                
+                // The return angle is the specular image of the hit angle
+                //b.angle = 270 - (b.angle - 270);
+                
+                // The return angle is going to be between 240 and 60 degrees depending on the hit position
+                b.angle = (int) 240 - (120 * hit_y / 48.0);
                 
                 mmEffectEx(&boom);
                 
