@@ -33,7 +33,6 @@ License: GPL v3
 #include <two_p_game_menu_es.h>
 
 #define PI 3.14159265
-#define INITIAL_ANGLE 45
 #define INITIAL_SPEED 2.0
 
 typedef struct {
@@ -104,6 +103,23 @@ unsigned int setBit(unsigned int value, unsigned int bit_flag) {
 unsigned int unsetBit(unsigned int value, unsigned int bit_flag) {
     
     return value & ~(bit_flag);
+
+}
+
+//---------------------------------------------------------------------
+// Returns a random number between 0 and limit inclusive
+// http://stackoverflow.com/a/2999130/2855012
+//---------------------------------------------------------------------
+int rand_lim(int limit) {
+
+    int divisor = RAND_MAX/(limit+1);
+    int retval;
+
+    do { 
+        retval = rand() / divisor;
+    } while (retval > limit);
+
+    return retval;
 
 }
 
@@ -212,7 +228,7 @@ int initGame(ball *b, paddle *p1, paddle *p2) {
     b->x = SCREEN_WIDTH / 2 - 1 - 4;
     b->y = SCREEN_HEIGHT / 2 - 1 - 4;
     b->speed = INITIAL_SPEED;
-    b->angle = INITIAL_ANGLE;
+    b->angle = rand_lim(360);
     b->height = 8;
     b->width = 8;
     
@@ -275,7 +291,7 @@ int main(void) {
     int keys_pressed, keys_held, keys_released;
     
     // Ball
-    ball b = {SCREEN_WIDTH / 2 - 1 - 4, SCREEN_HEIGHT / 2 - 1 - 4, INITIAL_SPEED, INITIAL_ANGLE, 8, 8};
+    ball b = {SCREEN_WIDTH / 2 - 1 - 4, SCREEN_HEIGHT / 2 - 1 - 4, INITIAL_SPEED, rand_lim(360), 8, 8};
     
     // Left paddle
     paddle p1 = {0, SCREEN_HEIGHT / 2 - 1 - 16, 1, 32, 8, 0};
@@ -862,7 +878,7 @@ int main(void) {
                 b.x = SCREEN_WIDTH / 2 - 1 - b.width / 2;
                 b.y = SCREEN_HEIGHT / 2 - 1 - b.height / 2;
                 
-                b.angle = INITIAL_ANGLE + 180;
+                b.angle = rand_lim(180) + 270;
                 
             // Right border of the screen
             } else if (b.x >= SCREEN_WIDTH - 1) {
@@ -889,7 +905,7 @@ int main(void) {
                 b.x = SCREEN_WIDTH / 2 - 1 - b.width / 2;
                 b.y = SCREEN_HEIGHT / 2 - 1 - b.height / 2;
                 
-                b.angle = INITIAL_ANGLE;
+                b.angle = rand_lim(180) + 90;
                 
             }
             
