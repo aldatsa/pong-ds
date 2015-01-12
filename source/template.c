@@ -34,14 +34,14 @@ License: GPL v3
 
 #define PI 3.14159265
 #define INITIAL_SPEED 2.0
+#define BALL_HEIGHT 8
+#define BALL_WIDTH 8
 
 typedef struct {
    double x;
    double y;
    double speed;
    int angle;
-   int height;
-   int width;
 } ball;
 
 typedef struct {
@@ -229,8 +229,6 @@ int initGame(ball *b, paddle *p1, paddle *p2) {
     b->y = SCREEN_HEIGHT / 2 - 1 - 4;
     b->speed = INITIAL_SPEED;
     b->angle = rand_lim(360);
-    b->height = 8;
-    b->width = 8;
     
     p1->x = 0;
     p1->y = SCREEN_HEIGHT / 2 - 1 - 16;
@@ -291,7 +289,7 @@ int main(void) {
     int keys_pressed, keys_held, keys_released;
     
     // Ball
-    ball b = {SCREEN_WIDTH / 2 - 1 - 4, SCREEN_HEIGHT / 2 - 1 - 4, INITIAL_SPEED, rand_lim(360), 8, 8};
+    ball b;
     
     // Left paddle
     paddle p1 = {0, SCREEN_HEIGHT / 2 - 1 - 16, 1, 32, 8, 0};
@@ -326,7 +324,7 @@ int main(void) {
     u16* gfx_p1 = oamAllocateGfx(&oamMain, SpriteSize_8x32, SpriteColorFormat_256Color);
     u16* gfx_p2 = oamAllocateGfx(&oamMain, SpriteSize_8x32, SpriteColorFormat_256Color);
 
-	for(i = 0; i < b.height * b.width / 2; i++)
+	for(i = 0; i < BALL_HEIGHT * BALL_WIDTH / 2; i++)
 	{
 		gfx[i] = 1 | (1 << 8);
 	}
@@ -817,7 +815,7 @@ int main(void) {
              */
             
             // Bottom of the screen
-            if (b.y + b.speed * sin(b.angle * PI / 180) >= SCREEN_HEIGHT - 1 - b.height) {
+            if (b.y + b.speed * sin(b.angle * PI / 180) >= SCREEN_HEIGHT - 1 - BALL_HEIGHT) {
                 
                 b.angle = 180 - (b.angle - 180);
                 
@@ -828,9 +826,9 @@ int main(void) {
                 b.angle = -b.angle;
                 
             // Left paddle collision detection
-            } else if (b.x <= p1.x + p1.width && b.y > p1.y - b.height && b.y < p1.y + p1.height + b.height) {
+            } else if (b.x <= p1.x + p1.width && b.y > p1.y - BALL_HEIGHT && b.y < p1.y + p1.height + BALL_HEIGHT) {
                 
-                int hit_y = b.y - p1.y + b.height;
+                int hit_y = b.y - p1.y + BALL_HEIGHT;
                 
                 // The return angle is the specular image of the hit angle
                 // b.angle = 90 - (b.angle - 90);
@@ -841,9 +839,9 @@ int main(void) {
                 mmEffectEx(&boom);
                 
             // Right paddle collision detection
-            } else if (b.x >= p2.x - p2.width && b.y > p2.y - b.height && b.y < p2.y + p2.height + b.height) {
+            } else if (b.x >= p2.x - p2.width && b.y > p2.y - BALL_HEIGHT && b.y < p2.y + p2.height + BALL_HEIGHT) {
                 
-                int hit_y = b.y - p2.y + b.height;
+                int hit_y = b.y - p2.y + BALL_HEIGHT;
                 
                 // The return angle is the specular image of the hit angle
                 //b.angle = 270 - (b.angle - 270);
@@ -875,8 +873,8 @@ int main(void) {
                         false,                       // hflip
                         false);                      // apply mosaic
                 
-                b.x = SCREEN_WIDTH / 2 - 1 - b.width / 2;
-                b.y = SCREEN_HEIGHT / 2 - 1 - b.height / 2;
+                b.x = SCREEN_WIDTH / 2 - 1 - BALL_WIDTH / 2;
+                b.y = SCREEN_HEIGHT / 2 - 1 - BALL_HEIGHT / 2;
                 
                 b.angle = rand_lim(180) + 270;
                 
@@ -902,8 +900,8 @@ int main(void) {
                         false,                       // hflip
                         false);                      // apply mosaic
                 
-                b.x = SCREEN_WIDTH / 2 - 1 - b.width / 2;
-                b.y = SCREEN_HEIGHT / 2 - 1 - b.height / 2;
+                b.x = SCREEN_WIDTH / 2 - 1 - BALL_WIDTH / 2;
+                b.y = SCREEN_HEIGHT / 2 - 1 - BALL_HEIGHT / 2;
                 
                 b.angle = rand_lim(180) + 90;
                 
