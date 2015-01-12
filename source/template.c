@@ -32,7 +32,7 @@ License: GPL v3
 #include <two_p_game_menu_eu.h>
 #include <two_p_game_menu_es.h>
 
-#define PI 3.14159265
+#define DEGREE_TO_RADIAN 0.01745329251
 #define INITIAL_SPEED 2.0
 #define BALL_HEIGHT 8
 #define BALL_WIDTH 8
@@ -677,7 +677,7 @@ int main(void) {
                 // Artificial intelligence for the paddle controlled by the CPU (only in one player mode)
                 
                 // If the ball is moving towards the paddle controlled by the CPU
-                if (b.speed * cos(b.angle * PI / 180) < 0) {
+                if (b.speed * cos(b.angle * DEGREE_TO_RADIAN) < 0) {
                     
                     // If the ball is above the paddle
                     if (b.y < p1.y) {
@@ -810,12 +810,12 @@ int main(void) {
              */
             
             // Bottom of the screen
-            if (b.y + b.speed * sin(b.angle * PI / 180) >= SCREEN_HEIGHT - 1 - BALL_HEIGHT) {
+            if (b.y + b.speed * sin(b.angle * DEGREE_TO_RADIAN) >= SCREEN_HEIGHT - 1 - BALL_HEIGHT) {
                 
                 b.angle = 180 - (b.angle - 180);
                 
             // Top of the screen
-            } else if (b.y + b.speed * sin(b.angle * PI / 180) <= 0) {
+            } else if (b.y + b.speed * sin(b.angle * DEGREE_TO_RADIAN) <= 0) {
                 
                 // b.angle = 0 - (b.angle - 0)
                 b.angle = -b.angle;
@@ -903,8 +903,8 @@ int main(void) {
             }
             
             // Update the position of the ball
-            b.x = b.x + b.speed * cos(b.angle * PI / 180);
-            b.y = b.y + b.speed * sin(b.angle * PI / 180);
+            b.x = b.x + b.speed * cos(b.angle * DEGREE_TO_RADIAN);
+            b.y = b.y + b.speed * sin(b.angle * DEGREE_TO_RADIAN);
             
             // Set the oam entry for the ball
             oamSet(&oamMain, //main graphics engine context
