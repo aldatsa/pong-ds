@@ -36,6 +36,8 @@ License: GPL v3
 #define INITIAL_SPEED 2.0
 #define BALL_HEIGHT 8
 #define BALL_WIDTH 8
+#define PADDLE_HEIGHT 32
+#define PADDLE_WIDTH 8
 
 typedef struct {
    double x;
@@ -225,23 +227,19 @@ int initGameField() {
 //---------------------------------------------------------------------
 int initGame(ball *b, paddle *p1, paddle *p2) {
     
-    b->x = SCREEN_WIDTH / 2 - 1 - 4;
-    b->y = SCREEN_HEIGHT / 2 - 1 - 4;
+    b->x = SCREEN_WIDTH / 2 - 1 - BALL_WIDTH / 2;
+    b->y = SCREEN_HEIGHT / 2 - 1 - BALL_HEIGHT / 2;
     b->speed = INITIAL_SPEED;
     b->angle = rand_lim(360);
     
     p1->x = 0;
-    p1->y = SCREEN_HEIGHT / 2 - 1 - 16;
+    p1->y = SCREEN_HEIGHT / 2 - 1 - PADDLE_HEIGHT / 2;
     p1->speed = 1;
-    p1->height = 32;
-    p1->width = 8;
     p1->score = 0;
     
-    p2->x = SCREEN_WIDTH - 8;
-    p2->y = SCREEN_HEIGHT / 2 - 1 - 16;
+    p2->x = SCREEN_WIDTH - PADDLE_WIDTH;
+    p2->y = SCREEN_HEIGHT / 2 - 1 - PADDLE_HEIGHT / 2;
     p2->speed = 1;
-    p2->height = 32;
-    p2->width = 8;
     p2->score = 0;
     
     // Set the oam entry for the score of the first player
@@ -292,10 +290,10 @@ int main(void) {
     ball b;
     
     // Left paddle
-    paddle p1 = {0, SCREEN_HEIGHT / 2 - 1 - 16, 1, 32, 8, 0};
+    paddle p1;
     
     // Rigth paddle
-    paddle p2 = {SCREEN_WIDTH - 8, SCREEN_HEIGHT / 2 - 1 - 16, 1, 32, 8, 0};
+    paddle p2;
     
 	videoSetMode(MODE_5_2D);
     videoSetModeSub(MODE_5_2D);
@@ -324,18 +322,15 @@ int main(void) {
     u16* gfx_p1 = oamAllocateGfx(&oamMain, SpriteSize_8x32, SpriteColorFormat_256Color);
     u16* gfx_p2 = oamAllocateGfx(&oamMain, SpriteSize_8x32, SpriteColorFormat_256Color);
 
-	for(i = 0; i < BALL_HEIGHT * BALL_WIDTH / 2; i++)
-	{
+	for(i = 0; i < BALL_HEIGHT * BALL_WIDTH / 2; i++) {
 		gfx[i] = 1 | (1 << 8);
 	}
 
-    for(i = 0; i < p1.height * p1.width / 2; i++)
-	{
+    for(i = 0; i < PADDLE_HEIGHT * PADDLE_WIDTH / 2; i++) {
 		gfx_p1[i] = 1 | (1 << 8);
 	}
 
-    for(i = 0; i < p2.height * p2.width / 2; i++)
-	{
+    for(i = 0; i < PADDLE_HEIGHT * PADDLE_WIDTH / 2; i++) {
 		gfx_p2[i] = 1 | (1 << 8);
 	}
     
@@ -699,7 +694,7 @@ int main(void) {
                     } else {
                         
                         // Don't let the paddle move below the bottom of the screen
-                        if (p1.y < SCREEN_HEIGHT - p1.height) {
+                        if (p1.y < SCREEN_HEIGHT - PADDLE_HEIGHT) {
                             
                             // Move the paddle down
                             p1.y = p1.y + 1;
@@ -712,7 +707,7 @@ int main(void) {
                 } else {
                     
                     // If the paddle controlled by the CPU is above the center of the screen
-                    if (p1.y > SCREEN_HEIGHT / 2 - 1 - p1.height / 2) {
+                    if (p1.y > SCREEN_HEIGHT / 2 - 1 - PADDLE_HEIGHT / 2) {
                         
                         // Move the paddle controlled byt the CPU down
                         p1.y = p1.y - 1;
@@ -741,7 +736,7 @@ int main(void) {
                 } else if (keys_held & KEY_DOWN) {
                     
                     // Don't let the paddle move below the bottom of the screen
-                    if (p2.y < SCREEN_HEIGHT - p2.height) {
+                    if (p2.y < SCREEN_HEIGHT - PADDLE_HEIGHT) {
                         
                         // Move the right paddle down
                         p2.y = p2.y + 1;
@@ -768,7 +763,7 @@ int main(void) {
                 } else if (keys_held & KEY_DOWN) {
                     
                     // Don't let the paddle move below the bottom of the screen
-                    if (p1.y < SCREEN_HEIGHT - p1.height) {
+                    if (p1.y < SCREEN_HEIGHT - PADDLE_HEIGHT) {
                         
                         // Move the right paddle down
                         p1.y = p1.y + 1;
@@ -791,7 +786,7 @@ int main(void) {
                 } else if (keys_held & KEY_B) {
                     
                     // Don't let the paddle move below the bottom of the screen
-                    if (p2.y < SCREEN_HEIGHT - p2.height) {
+                    if (p2.y < SCREEN_HEIGHT - PADDLE_HEIGHT) {
                         
                         p2.y = p2.y + 1;
                         
@@ -826,7 +821,7 @@ int main(void) {
                 b.angle = -b.angle;
                 
             // Left paddle collision detection
-            } else if (b.x <= p1.x + p1.width && b.y > p1.y - BALL_HEIGHT && b.y < p1.y + p1.height + BALL_HEIGHT) {
+            } else if (b.x <= p1.x + PADDLE_WIDTH && b.y > p1.y - BALL_HEIGHT && b.y < p1.y + PADDLE_HEIGHT + BALL_HEIGHT) {
                 
                 int hit_y = b.y - p1.y + BALL_HEIGHT;
                 
@@ -839,7 +834,7 @@ int main(void) {
                 mmEffectEx(&boom);
                 
             // Right paddle collision detection
-            } else if (b.x >= p2.x - p2.width && b.y > p2.y - BALL_HEIGHT && b.y < p2.y + p2.height + BALL_HEIGHT) {
+            } else if (b.x >= p2.x - PADDLE_WIDTH && b.y > p2.y - BALL_HEIGHT && b.y < p2.y + PADDLE_HEIGHT + BALL_HEIGHT) {
                 
                 int hit_y = b.y - p2.y + BALL_HEIGHT;
                 
