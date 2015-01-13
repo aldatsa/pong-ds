@@ -688,16 +688,16 @@ int main(void) {
                 // Artificial intelligence for the paddle controlled by the CPU (only in one player mode)
                 
                 // If the ball is moving towards the paddle controlled by the CPU
-                if (b.speed * cos(b.angle * DEGREE_TO_RADIAN) < 0) {
+                if (b.speed * cos(b.angle * DEGREE_TO_RADIAN) > 0) {
                     
                     // If the ball is above the paddle
-                    if (b.y < p1.y) {
+                    if (b.y < p2.y) {
                         
                         // Don't let the paddle move above the top of the screen
-                        if (p1.y > 0) {
+                        if (p2.y > 0) {
                             
                             // Move the paddle up
-                            p1.y = p1.y - 1;
+                            p2.y = p2.y - 1;
                             
                         }
                         
@@ -705,10 +705,10 @@ int main(void) {
                     } else {
                         
                         // Don't let the paddle move below the bottom of the screen
-                        if (p1.y < SCREEN_HEIGHT - PADDLE_HEIGHT) {
+                        if (p2.y < SCREEN_HEIGHT - PADDLE_HEIGHT) {
                             
                             // Move the paddle down
-                            p1.y = p1.y + 1;
+                            p2.y = p2.y + 1;
                             
                         }
                         
@@ -718,16 +718,16 @@ int main(void) {
                 } else {
                     
                     // If the paddle controlled by the CPU is above the center of the screen
-                    if (p1.y > SCREEN_HEIGHT / 2 - 1 - PADDLE_HEIGHT / 2) {
+                    if (p2.y > SCREEN_HEIGHT / 2 - 1 - PADDLE_HEIGHT / 2) {
                         
                         // Move the paddle controlled byt the CPU down
-                        p1.y = p1.y - 1;
+                        p2.y = p2.y - 1;
                         
                     // If the paddle controlled by the CPU is below the center of the screen
                     } else {
                         
                         // Move the paddle controlled by the CPU up
-                        p1.y = p1.y + 1;
+                        p2.y = p2.y + 1;
                         
                     }
                 }
@@ -736,10 +736,10 @@ int main(void) {
                 if (keys_held & KEY_UP) {
                     
                     // Don't let the paddle move above the top of the screen
-                    if (p2.y > 0) {
+                    if (p1.y > 0) {
                         
                         // Move the right paddle up
-                        p2.y = p2.y - 1;
+                        p1.y = p1.y - 1;
                         
                     }
                     
@@ -747,10 +747,10 @@ int main(void) {
                 } else if (keys_held & KEY_DOWN) {
                     
                     // Don't let the paddle move below the bottom of the screen
-                    if (p2.y < SCREEN_HEIGHT - PADDLE_HEIGHT) {
+                    if (p1.y < SCREEN_HEIGHT - PADDLE_HEIGHT) {
                         
                         // Move the right paddle down
-                        p2.y = p2.y + 1;
+                        p1.y = p1.y + 1;
                         
                     }
                     
