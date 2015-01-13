@@ -38,6 +38,7 @@ License: GPL v3
 #define BALL_WIDTH 8
 #define PADDLE_HEIGHT 32
 #define PADDLE_WIDTH 8
+#define SCORE_LIMIT 10
 
 typedef struct {
    double x;
@@ -285,6 +286,8 @@ int main(void) {
 	int i = 0;
     
     int keys_pressed, keys_held, keys_released;
+    
+    bool game_ended = false;
     
     // Ball
     ball b;
@@ -620,6 +623,8 @@ int main(void) {
             
             initGame(&b, &p1, &p2);
             
+            game_ended = false;
+            
             showMenu(screen, language);
             
         } else if (isBitSet(menu_buttons_released, MAIN_MENU_TWO_PLAYERS)) {
@@ -630,6 +635,8 @@ int main(void) {
             
             initGame(&b, &p1, &p2);
             
+            game_ended = false;
+            
             showMenu(screen, language);
             
         // Restart button released (1 player mode)
@@ -637,10 +644,14 @@ int main(void) {
             
             initGame(&b, &p1, &p2);
             
+            game_ended = false;
+            
         // Restart button released (2 players mode)
         } else if (isBitSet(menu_buttons_released, TWO_PLAYERS_MENU_RESTART)) {
             
             initGame(&b, &p1, &p2);
+            
+            game_ended = false;
             
         // Back to main menu button released (1 player mode)
         } else if (isBitSet(menu_buttons_released, ONE_PLAYER_MENU_BACK)) {
@@ -669,7 +680,7 @@ int main(void) {
             showMenu(screen, language);
             
         // 
-        } else if (screen == ONE_PLAYER_GAME || screen == TWO_PLAYERS_GAME) {
+        } else if (game_ended == false && screen == ONE_PLAYER_GAME || screen == TWO_PLAYERS_GAME) {
             
             // One player mode (VS CPU)
             if (screen == ONE_PLAYER_GAME) {
@@ -874,12 +885,29 @@ int main(void) {
                         false,                       // hflip
                         false);                      // apply mosaic
                 
-                b.x = SCREEN_WIDTH / 2 - 1 - BALL_WIDTH / 2;
-                b.y = SCREEN_HEIGHT / 2 - 1 - BALL_HEIGHT / 2;
-                
-                b.angle = rand_lim(180) + 270;
-                
-                b.speed = INITIAL_SPEED;
+                if (p2.score < SCORE_LIMIT) {
+                    
+                    b.x = SCREEN_WIDTH / 2 - 1 - BALL_WIDTH / 2;
+                    b.y = SCREEN_HEIGHT / 2 - 1 - BALL_HEIGHT / 2;
+                    
+                    b.angle = rand_lim(180) + 270;
+                    
+                    b.speed = INITIAL_SPEED;
+                    
+                } else {
+                    
+                    game_ended = true;
+                    
+                    // Hide the ball
+                    oamClearSprite(&oamMain, 0);
+                    
+                    // Wait for a vertical blank interrupt
+                    swiWaitForVBlank();
+                    
+                    // Update the oam memories of the main screen
+                    oamUpdate(&oamMain);
+                    
+                }
                 
             // Right border of the screen
             } else if (b.x >= SCREEN_WIDTH - 1) {
@@ -903,72 +931,93 @@ int main(void) {
                         false,                       // hflip
                         false);                      // apply mosaic
                 
-                b.x = SCREEN_WIDTH / 2 - 1 - BALL_WIDTH / 2;
-                b.y = SCREEN_HEIGHT / 2 - 1 - BALL_HEIGHT / 2;
-                
-                b.angle = rand_lim(180) + 90;
-                
-                b.speed = INITIAL_SPEED;
+                if (p1.score < SCORE_LIMIT) {
+                    
+                    b.x = SCREEN_WIDTH / 2 - 1 - BALL_WIDTH / 2;
+                    b.y = SCREEN_HEIGHT / 2 - 1 - BALL_HEIGHT / 2;
+                    
+                    b.angle = rand_lim(180) + 90;
+                    
+                    b.speed = INITIAL_SPEED;
+                    
+                } else {
+                    
+                    game_ended = true;
+                    
+                    // Hide the ball
+                    oamClearSprite(&oamMain, 0);
+                    
+                    // Wait for a vertical blank interrupt
+                    swiWaitForVBlank();
+                    
+                    // Update the oam memories of the main screen
+                    oamUpdate(&oamMain);
+                    
+                }
                 
             }
             
-            // Update the position of the ball
-            b.x = b.x + b.speed * cos(b.angle * DEGREE_TO_RADIAN);
-            b.y = b.y + b.speed * sin(b.angle * DEGREE_TO_RADIAN);
-            
-            // Set the oam entry for the ball
-            oamSet(&oamMain, //main graphics engine context
-                0,           //oam index (0 to 127)  
-                (int) b.x, (int) b.y,   //x and y pixle location of the sprite
-                0,                    //priority, lower renders last (on top)
-                0,					  //this is the palette index if multiple palettes or the alpha value if bmp sprite	
-                SpriteSize_8x8,     
-                SpriteColorFormat_256Color, 
-                gfx,                  //pointer to the loaded graphics
-                -1,                  //sprite rotation data  
-                false,               //double the size when rotating?
-                false,			//hide the sprite?
-                false, false, //vflip, hflip
-                false	//apply mosaic
-                );              
-            
-            // Set the oam entry for the left paddle
-            oamSet(&oamMain, //main graphics engine context
-                1,           //oam index (0 to 127)  
-                p1.x, p1.y,   //x and y pixle location of the sprite
-                0,                    //priority, lower renders last (on top)
-                0,					  //this is the palette index if multiple palettes or the alpha value if bmp sprite	
-                SpriteSize_8x32,     
-                SpriteColorFormat_256Color, 
-                gfx_p1,                  //pointer to the loaded graphics
-                -1,                  //sprite rotation data  
-                false,               //double the size when rotating?
-                false,			//hide the sprite?
-                false, false, //vflip, hflip
-                false	//apply mosaic
-                );
-    
-            // Set the oam entry for the right paddle
-            oamSet(&oamMain, //main graphics engine context
-                2,           //oam index (0 to 127)  
-                p2.x, p2.y,   //x and y pixle location of the sprite
-                0,                    //priority, lower renders last (on top)
-                0,					  //this is the palette index if multiple palettes or the alpha value if bmp sprite	
-                SpriteSize_8x32,     
-                SpriteColorFormat_256Color, 
-                gfx_p2,                  //pointer to the loaded graphics
-                -1,                  //sprite rotation data  
-                false,               //double the size when rotating?
-                false,			//hide the sprite?
-                false, false, //vflip, hflip
-                false	//apply mosaic
-                );
-            
-            // Wait for a vertical blank interrupt
-            swiWaitForVBlank();
-            
-            // Update the oam memories of the main screen
-            oamUpdate(&oamMain);
+            if (game_ended == false) {
+                
+                // Update the position of the ball
+                b.x = b.x + b.speed * cos(b.angle * DEGREE_TO_RADIAN);
+                b.y = b.y + b.speed * sin(b.angle * DEGREE_TO_RADIAN);
+                
+                // Set the oam entry for the ball
+                oamSet(&oamMain, //main graphics engine context
+                    0,           //oam index (0 to 127)  
+                    (int) b.x, (int) b.y,   //x and y pixle location of the sprite
+                    0,                    //priority, lower renders last (on top)
+                    0,					  //this is the palette index if multiple palettes or the alpha value if bmp sprite	
+                    SpriteSize_8x8,     
+                    SpriteColorFormat_256Color, 
+                    gfx,                  //pointer to the loaded graphics
+                    -1,                  //sprite rotation data  
+                    false,               //double the size when rotating?
+                    false,			//hide the sprite?
+                    false, false, //vflip, hflip
+                    false	//apply mosaic
+                    );              
+                
+                // Set the oam entry for the left paddle
+                oamSet(&oamMain, //main graphics engine context
+                    1,           //oam index (0 to 127)  
+                    p1.x, p1.y,   //x and y pixle location of the sprite
+                    0,                    //priority, lower renders last (on top)
+                    0,					  //this is the palette index if multiple palettes or the alpha value if bmp sprite	
+                    SpriteSize_8x32,     
+                    SpriteColorFormat_256Color, 
+                    gfx_p1,                  //pointer to the loaded graphics
+                    -1,                  //sprite rotation data  
+                    false,               //double the size when rotating?
+                    false,			//hide the sprite?
+                    false, false, //vflip, hflip
+                    false	//apply mosaic
+                    );
+        
+                // Set the oam entry for the right paddle
+                oamSet(&oamMain, //main graphics engine context
+                    2,           //oam index (0 to 127)  
+                    p2.x, p2.y,   //x and y pixle location of the sprite
+                    0,                    //priority, lower renders last (on top)
+                    0,					  //this is the palette index if multiple palettes or the alpha value if bmp sprite	
+                    SpriteSize_8x32,     
+                    SpriteColorFormat_256Color, 
+                    gfx_p2,                  //pointer to the loaded graphics
+                    -1,                  //sprite rotation data  
+                    false,               //double the size when rotating?
+                    false,			//hide the sprite?
+                    false, false, //vflip, hflip
+                    false	//apply mosaic
+                    );
+                
+                // Wait for a vertical blank interrupt
+                swiWaitForVBlank();
+                
+                // Update the oam memories of the main screen
+                oamUpdate(&oamMain);
+                
+            }
             
         }
         
