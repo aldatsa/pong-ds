@@ -33,7 +33,7 @@ License: GPL v3
 #include <two_p_game_menu_es.h>
 
 #define DEGREE_TO_RADIAN 0.01745329251
-#define INITIAL_SPEED 2.0
+#define INITIAL_SPEED 1.5
 #define BALL_HEIGHT 8
 #define BALL_WIDTH 8
 #define PADDLE_HEIGHT 32
@@ -831,6 +831,9 @@ int main(void) {
                 // The return angle is going to be between 300 and 60 degrees depending on the hit position
                 b.angle = (int) 300 + (120 * hit_y / 48.0);
                 
+                // Increase the speed of the ball
+                b.speed = b.speed + 0.1;
+                
                 mmEffectEx(&boom);
                 
             // Right paddle collision detection
@@ -843,6 +846,9 @@ int main(void) {
                 
                 // The return angle is going to be between 240 and 60 degrees depending on the hit position
                 b.angle = (int) 240 - (120 * hit_y / 48.0);
+                
+                // Increase the speed of the ball
+                b.speed = b.speed + 0.1;
                 
                 mmEffectEx(&boom);
                 
@@ -873,6 +879,8 @@ int main(void) {
                 
                 b.angle = rand_lim(180) + 270;
                 
+                b.speed = INITIAL_SPEED;
+                
             // Right border of the screen
             } else if (b.x >= SCREEN_WIDTH - 1) {
                 
@@ -899,6 +907,8 @@ int main(void) {
                 b.y = SCREEN_HEIGHT / 2 - 1 - BALL_HEIGHT / 2;
                 
                 b.angle = rand_lim(180) + 90;
+                
+                b.speed = INITIAL_SPEED;
                 
             }
             
