@@ -57,9 +57,6 @@ typedef struct {
     int score;
 } paddle;
 
-// The digit sprites
-u16* sprite_gfx_mem[12];
-
 enum menu_button_flags {
     MAIN_MENU_ONE_PLAYER = 1 << 0,
     MAIN_MENU_TWO_PLAYERS = 1 << 1,
@@ -122,7 +119,7 @@ int rand_lim(int limit) {
 //---------------------------------------------------------------------
 // Load all the digits into memory
 //---------------------------------------------------------------------
-void initDigits(u8* gfx) {
+void initDigits(u8* gfx, u16* sprite_gfx_mem[]) {
 	int i;
 
 	for(i = 0; i < 12; i++) {
@@ -221,7 +218,7 @@ int initGameField() {
 //---------------------------------------------------------------------
 // Initializes the game
 //---------------------------------------------------------------------
-int initGame(ball *b, paddle *p1, paddle *p2) {
+int initGame(ball *b, paddle *p1, paddle *p2, u16* sprite_gfx_mem[]) {
     
     b->x = SCREEN_WIDTH / 2 - 1 - BALL_WIDTH / 2;
     b->y = SCREEN_HEIGHT / 2 - 1 - BALL_HEIGHT / 2;
@@ -280,6 +277,9 @@ int main(void) {
 	//---------------------------------------------------------------------------------
 	int i = 0;
     
+    // The digit sprites
+    u16* sprite_gfx_mem[12];
+    
     int keys_pressed, keys_held, keys_released;
     
     unsigned int menu_buttons_pressed = 0x0;
@@ -319,7 +319,7 @@ int main(void) {
     // Initialize the 2D sprite engine of the main (top) screen
 	oamInit(&oamMain, SpriteMapping_1D_128, false);
 	
-    initDigits((u8*)digitsTiles);
+    initDigits((u8*)digitsTiles, sprite_gfx_mem);
     
     dmaCopy(digitsPal, SPRITE_PALETTE, 512);
     
@@ -659,7 +659,7 @@ int main(void) {
             
             initGameField();
             
-            initGame(&b, &p1, &p2);
+            initGame(&b, &p1, &p2, sprite_gfx_mem);
             
             game_ended = false;
             
@@ -671,7 +671,7 @@ int main(void) {
             
             initGameField();
             
-            initGame(&b, &p1, &p2);
+            initGame(&b, &p1, &p2, sprite_gfx_mem);
             
             game_ended = false;
             
@@ -680,14 +680,14 @@ int main(void) {
         // Restart button released (1 player mode)
         } else if (isBitSet(menu_buttons_released, ONE_PLAYER_MENU_RESTART)) {
             
-            initGame(&b, &p1, &p2);
+            initGame(&b, &p1, &p2, sprite_gfx_mem);
             
             game_ended = false;
             
         // Restart button released (2 players mode)
         } else if (isBitSet(menu_buttons_released, TWO_PLAYERS_MENU_RESTART)) {
             
-            initGame(&b, &p1, &p2);
+            initGame(&b, &p1, &p2, sprite_gfx_mem);
             
             game_ended = false;
             
