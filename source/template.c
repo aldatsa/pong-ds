@@ -343,22 +343,25 @@ int main(void) {
 	SPRITE_PALETTE[1] = RGB15(31,31,31);    // White
     
     mmInitDefaultMem((mm_addr)soundbank_bin);
-	
-	// load the module
-	mmLoad( MOD_FLATOUTLIES );
 
 	// load sound effects
-	mmLoadEffect( SFX_BOOM );
+	mmLoadEffect(SFX_TXALAPARTA1);
+    mmLoadEffect(SFX_TXALAPARTA2);
 
-	// Start playing module
-	mmStart( MOD_FLATOUTLIES, MM_PLAY_LOOP );
-
-	mm_sound_effect boom = {
-		{ SFX_BOOM } ,			// id
+	mm_sound_effect txalaparta1 = {
+		{ SFX_TXALAPARTA1 },	// id
 		(int)(1.0f * (1<<10)),	// rate
-		0,		// handle
-		255,	// volume
-		255,	// panning
+		0,		                // handle
+		255,	                // volume
+		255,	                // panning
+	};
+    
+    mm_sound_effect txalaparta2 = {
+		{ SFX_TXALAPARTA2 },	// id
+		(int)(1.0f * (1<<10)),	// rate
+		0,		                // handle
+		255,	                // volume
+		255,	                // panning
 	};
     
 	while(1) {
@@ -883,7 +886,7 @@ int main(void) {
                 // Increase the speed of the ball
                 b.speed = b.speed + 0.1;
                 
-                mmEffectEx(&boom);
+                mmEffectEx(&txalaparta1);
                 
             // Right paddle collision detection
             } else if (b.x >= p2.x - PADDLE_WIDTH && b.y > p2.y - BALL_HEIGHT && b.y < p2.y + PADDLE_HEIGHT + BALL_HEIGHT) {
@@ -899,7 +902,7 @@ int main(void) {
                 // Increase the speed of the ball
                 b.speed = b.speed + 0.1;
                 
-                mmEffectEx(&boom);
+                mmEffectEx(&txalaparta2);
                 
             // Left border of the screen
             } else if (b.x <= 0) {
