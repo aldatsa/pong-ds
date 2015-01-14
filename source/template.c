@@ -60,10 +60,6 @@ typedef struct {
 // The digit sprites
 u16* sprite_gfx_mem[12];
 
-unsigned int menu_buttons_pressed = 0x0;
-unsigned int menu_buttons_held = 0x0;
-unsigned int menu_buttons_released = 0x0;
-
 enum menu_button_flags {
     MAIN_MENU_ONE_PLAYER = 1 << 0,
     MAIN_MENU_TWO_PLAYERS = 1 << 1,
@@ -77,16 +73,12 @@ enum menu_button_flags {
     LANGUAGE_MENU_FRENCH = 1 << 9
 };
 
-unsigned int screen;
-
 enum screen_options {
     LANGUAGE_MENU = 0,
     MAIN_MENU = 1,
     ONE_PLAYER_GAME = 2,
     TWO_PLAYERS_GAME = 3
 };
-
-unsigned int language;
 
 enum languages {
     EN = 0,
@@ -289,6 +281,14 @@ int main(void) {
 	int i = 0;
     
     int keys_pressed, keys_held, keys_released;
+    
+    unsigned int menu_buttons_pressed = 0x0;
+    unsigned int menu_buttons_held = 0x0;
+    unsigned int menu_buttons_released = 0x0;
+    
+    unsigned int language;
+    
+    unsigned int screen;
     
     bool game_ended = false;
     
