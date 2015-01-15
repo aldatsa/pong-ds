@@ -117,6 +117,14 @@ int rand_lim(int limit) {
 }
 
 //---------------------------------------------------------------------
+// Set the video modes of the screens
+//---------------------------------------------------------------------
+void setVideoModes() {
+    videoSetMode(MODE_5_2D);
+    videoSetModeSub(MODE_5_2D);
+}
+
+//---------------------------------------------------------------------
 // Load all the digits into memory
 //---------------------------------------------------------------------
 void initDigits(u8* gfx, u16* sprite_gfx_mem[]) {
@@ -303,8 +311,7 @@ int main(void) {
     // Rigth paddle
     paddle p2;
     
-	videoSetMode(MODE_5_2D);
-    videoSetModeSub(MODE_5_2D);
+    setVideoModes();
     
     vramSetBankA(VRAM_A_MAIN_BG);
     vramSetBankB(VRAM_B_MAIN_SPRITE);
