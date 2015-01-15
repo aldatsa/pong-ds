@@ -118,10 +118,17 @@ int rand_lim(int limit) {
 
 //---------------------------------------------------------------------
 // Set the video modes of the screens
+// and set the VRAM banks to the corresponding values
 //---------------------------------------------------------------------
-void setVideoModes() {
+void initScreensAndVRAM() {
+    
     videoSetMode(MODE_5_2D);
     videoSetModeSub(MODE_5_2D);
+    
+    vramSetBankA(VRAM_A_MAIN_BG);
+    vramSetBankB(VRAM_B_MAIN_SPRITE);
+    vramSetBankC(VRAM_C_SUB_BG);
+    
 }
 
 //---------------------------------------------------------------------
@@ -311,11 +318,7 @@ int main(void) {
     // Rigth paddle
     paddle p2;
     
-    setVideoModes();
-    
-    vramSetBankA(VRAM_A_MAIN_BG);
-    vramSetBankB(VRAM_B_MAIN_SPRITE);
-    vramSetBankC(VRAM_C_SUB_BG);
+    initScreensAndVRAM();
     
     screen = LANGUAGE_MENU;
     language = EN;
