@@ -70,7 +70,7 @@ enum menu_button_flags {
     LANGUAGE_MENU_FRENCH = 1 << 9
 };
 
-enum screen_options {
+enum state_options {
     LANGUAGE_MENU = 0,
     MAIN_MENU = 1,
     ONE_PLAYER_GAME = 2,
@@ -161,12 +161,12 @@ int showSplash() {
 //---------------------------------------------------------------------
 // Shows the corresponding menu
 //---------------------------------------------------------------------
-int showMenu(int id, unsigned int language) {
+int showMenu(int state, unsigned int language) {
     
     // set up the bitmap background of the main menu on the sub screen
 	bgInitSub(3, BgType_Bmp16, BgSize_B16_256x256, 0,0);
 	
-    switch (id) {
+    switch (state) {
         
         case LANGUAGE_MENU:
             decompress(language_menuBitmap, BG_GFX_SUB,  LZ77Vram);
@@ -305,7 +305,7 @@ int main(void) {
     
     unsigned int language;
     
-    unsigned int screen;
+    unsigned int state;
     
     bool game_ended = false;
     
@@ -318,7 +318,7 @@ int main(void) {
     // Rigth paddle
     paddle p2;
     
-    screen = LANGUAGE_MENU;
+    state = LANGUAGE_MENU;
     language = EN;
     
     initScreensAndVRAM();
@@ -326,7 +326,7 @@ int main(void) {
     showSplash();
     
     // Show the language menu
-    showMenu(screen, language);
+    showMenu(state, language);
     
     // Initialize the 2D sprite engine of the main (top) screen
 	oamInit(&oamMain, SpriteMapping_1D_128, false);
@@ -393,45 +393,45 @@ int main(void) {
             if (touch.px >= 52 && touch.px <= 211 && touch.py >= 53 && touch.py <= 73) {
                 
                 // English button pressed in the language menu
-                if (screen == LANGUAGE_MENU && !isBitSet(menu_buttons_pressed, LANGUAGE_MENU_ENGLISH) && !isBitSet(menu_buttons_held, LANGUAGE_MENU_ENGLISH) && !isBitSet(menu_buttons_released, LANGUAGE_MENU_ENGLISH)) {
+                if (state == LANGUAGE_MENU && !isBitSet(menu_buttons_pressed, LANGUAGE_MENU_ENGLISH) && !isBitSet(menu_buttons_held, LANGUAGE_MENU_ENGLISH) && !isBitSet(menu_buttons_released, LANGUAGE_MENU_ENGLISH)) {
                     
                     menu_buttons_pressed = setBit(menu_buttons_pressed, LANGUAGE_MENU_ENGLISH);
                     
                 // English button held in the main menu
-                } else if (screen == LANGUAGE_MENU && isBitSet(menu_buttons_pressed, LANGUAGE_MENU_ENGLISH)) {
+                } else if (state == LANGUAGE_MENU && isBitSet(menu_buttons_pressed, LANGUAGE_MENU_ENGLISH)) {
                     
                     menu_buttons_held = setBit(menu_buttons_held, LANGUAGE_MENU_ENGLISH);
                     menu_buttons_pressed = unsetBit(menu_buttons_pressed, LANGUAGE_MENU_ENGLISH);
                     
                 // 1 player mode button pressed in the main menu
-                } else if (screen == MAIN_MENU && !isBitSet(menu_buttons_pressed, MAIN_MENU_ONE_PLAYER) && !isBitSet(menu_buttons_held, MAIN_MENU_ONE_PLAYER) && !isBitSet(menu_buttons_released, MAIN_MENU_ONE_PLAYER)) {
+                } else if (state == MAIN_MENU && !isBitSet(menu_buttons_pressed, MAIN_MENU_ONE_PLAYER) && !isBitSet(menu_buttons_held, MAIN_MENU_ONE_PLAYER) && !isBitSet(menu_buttons_released, MAIN_MENU_ONE_PLAYER)) {
                     
                     menu_buttons_pressed = setBit(menu_buttons_pressed, MAIN_MENU_ONE_PLAYER);
                     
                 // 1 player mode button held in the main menu
-                } else if (screen == MAIN_MENU && isBitSet(menu_buttons_pressed, MAIN_MENU_ONE_PLAYER)) {
+                } else if (state == MAIN_MENU && isBitSet(menu_buttons_pressed, MAIN_MENU_ONE_PLAYER)) {
                     
                     menu_buttons_held = setBit(menu_buttons_held, MAIN_MENU_ONE_PLAYER);
                     menu_buttons_pressed = unsetBit(menu_buttons_pressed, MAIN_MENU_ONE_PLAYER);
                     
                 // Restart button pressed (1 player mode)
-                } else if (screen == ONE_PLAYER_GAME && !isBitSet(menu_buttons_pressed, ONE_PLAYER_MENU_RESTART) && !isBitSet(menu_buttons_held, ONE_PLAYER_MENU_RESTART) && !isBitSet(menu_buttons_released, ONE_PLAYER_MENU_RESTART)) {
+                } else if (state == ONE_PLAYER_GAME && !isBitSet(menu_buttons_pressed, ONE_PLAYER_MENU_RESTART) && !isBitSet(menu_buttons_held, ONE_PLAYER_MENU_RESTART) && !isBitSet(menu_buttons_released, ONE_PLAYER_MENU_RESTART)) {
                     
                     menu_buttons_pressed = setBit(menu_buttons_pressed, ONE_PLAYER_MENU_RESTART);
                     
                 // Restart button held (1 player mode)
-                } else if (screen == ONE_PLAYER_GAME && isBitSet(menu_buttons_pressed, ONE_PLAYER_MENU_RESTART)) {
+                } else if (state == ONE_PLAYER_GAME && isBitSet(menu_buttons_pressed, ONE_PLAYER_MENU_RESTART)) {
                     
                     menu_buttons_held = setBit(menu_buttons_held, ONE_PLAYER_MENU_RESTART);
                     menu_buttons_pressed = unsetBit(menu_buttons_pressed, ONE_PLAYER_MENU_RESTART);
                     
                 // Restart button pressed (2 players mode)
-                } else if (screen == TWO_PLAYERS_GAME && !isBitSet(menu_buttons_pressed, TWO_PLAYERS_MENU_RESTART) && !isBitSet(menu_buttons_held, TWO_PLAYERS_MENU_RESTART) && !isBitSet(menu_buttons_released, TWO_PLAYERS_MENU_RESTART)) {
+                } else if (state == TWO_PLAYERS_GAME && !isBitSet(menu_buttons_pressed, TWO_PLAYERS_MENU_RESTART) && !isBitSet(menu_buttons_held, TWO_PLAYERS_MENU_RESTART) && !isBitSet(menu_buttons_released, TWO_PLAYERS_MENU_RESTART)) {
                     
                     menu_buttons_pressed = setBit(menu_buttons_pressed, TWO_PLAYERS_MENU_RESTART);
                     
                 // Restart button held (2 players mode)
-                } else if (screen == TWO_PLAYERS_GAME && isBitSet(menu_buttons_pressed, TWO_PLAYERS_MENU_RESTART)) {
+                } else if (state == TWO_PLAYERS_GAME && isBitSet(menu_buttons_pressed, TWO_PLAYERS_MENU_RESTART)) {
                     
                     menu_buttons_held = setBit(menu_buttons_held, TWO_PLAYERS_MENU_RESTART);
                     menu_buttons_pressed = unsetBit(menu_buttons_pressed, TWO_PLAYERS_MENU_RESTART);
@@ -442,45 +442,45 @@ int main(void) {
             } else if (touch.px >= 52 && touch.px <= 211 && touch.py >= 77 && touch.py <= 97) {
                 
                 // Basque button pressed in the language menu
-                if (screen == LANGUAGE_MENU && !isBitSet(menu_buttons_pressed, LANGUAGE_MENU_EUSKARA) && !isBitSet(menu_buttons_held, LANGUAGE_MENU_EUSKARA) && !isBitSet(menu_buttons_released, LANGUAGE_MENU_EUSKARA)) {
+                if (state == LANGUAGE_MENU && !isBitSet(menu_buttons_pressed, LANGUAGE_MENU_EUSKARA) && !isBitSet(menu_buttons_held, LANGUAGE_MENU_EUSKARA) && !isBitSet(menu_buttons_released, LANGUAGE_MENU_EUSKARA)) {
                     
                     menu_buttons_pressed = setBit(menu_buttons_pressed, LANGUAGE_MENU_EUSKARA);
                     
                 // Basque button held in the language menu
-                } else if (screen == LANGUAGE_MENU && isBitSet(menu_buttons_pressed, LANGUAGE_MENU_EUSKARA)) {
+                } else if (state == LANGUAGE_MENU && isBitSet(menu_buttons_pressed, LANGUAGE_MENU_EUSKARA)) {
                     
                     menu_buttons_held = setBit(menu_buttons_held, LANGUAGE_MENU_EUSKARA);
                     menu_buttons_pressed = unsetBit(menu_buttons_pressed, LANGUAGE_MENU_EUSKARA);
                  
                 // 2 players mode button pressed in the main menu
-                } else if (screen == MAIN_MENU && !isBitSet(menu_buttons_pressed, MAIN_MENU_TWO_PLAYERS) && !isBitSet(menu_buttons_held, MAIN_MENU_TWO_PLAYERS) && !isBitSet(menu_buttons_released, MAIN_MENU_TWO_PLAYERS)) {
+                } else if (state == MAIN_MENU && !isBitSet(menu_buttons_pressed, MAIN_MENU_TWO_PLAYERS) && !isBitSet(menu_buttons_held, MAIN_MENU_TWO_PLAYERS) && !isBitSet(menu_buttons_released, MAIN_MENU_TWO_PLAYERS)) {
                     
                     menu_buttons_pressed = setBit(menu_buttons_pressed, MAIN_MENU_TWO_PLAYERS);
                     
                 // 2 players mode button held in the main menu
-                } else if (screen == MAIN_MENU && isBitSet(menu_buttons_pressed, MAIN_MENU_TWO_PLAYERS)) {
+                } else if (state == MAIN_MENU && isBitSet(menu_buttons_pressed, MAIN_MENU_TWO_PLAYERS)) {
                     
                     menu_buttons_held = setBit(menu_buttons_held, MAIN_MENU_TWO_PLAYERS);
                     menu_buttons_pressed = unsetBit(menu_buttons_pressed, MAIN_MENU_TWO_PLAYERS);
                     
                 // Back to main menu button pressed (1 player mode)
-                } else if (screen == ONE_PLAYER_GAME && !isBitSet(menu_buttons_pressed, ONE_PLAYER_MENU_BACK) && !isBitSet(menu_buttons_held, ONE_PLAYER_MENU_BACK) && !isBitSet(menu_buttons_released, ONE_PLAYER_MENU_BACK)) {
+                } else if (state == ONE_PLAYER_GAME && !isBitSet(menu_buttons_pressed, ONE_PLAYER_MENU_BACK) && !isBitSet(menu_buttons_held, ONE_PLAYER_MENU_BACK) && !isBitSet(menu_buttons_released, ONE_PLAYER_MENU_BACK)) {
                     
                     menu_buttons_pressed = setBit(menu_buttons_pressed, ONE_PLAYER_MENU_BACK);
                     
                 // Back to main menu button held (1 player mode)
-                } else if (screen == ONE_PLAYER_GAME && isBitSet(menu_buttons_pressed, ONE_PLAYER_MENU_BACK)) {
+                } else if (state == ONE_PLAYER_GAME && isBitSet(menu_buttons_pressed, ONE_PLAYER_MENU_BACK)) {
                     
                     menu_buttons_held = setBit(menu_buttons_held, ONE_PLAYER_MENU_BACK);
                     menu_buttons_pressed = unsetBit(menu_buttons_pressed, ONE_PLAYER_MENU_BACK);
                     
                 // Back to main menu button pressed (2 players mode)
-                } else if (screen == TWO_PLAYERS_GAME && !isBitSet(menu_buttons_pressed, TWO_PLAYERS_MENU_BACK) && !isBitSet(menu_buttons_held, TWO_PLAYERS_MENU_BACK) && !isBitSet(menu_buttons_released, TWO_PLAYERS_MENU_BACK)) {
+                } else if (state == TWO_PLAYERS_GAME && !isBitSet(menu_buttons_pressed, TWO_PLAYERS_MENU_BACK) && !isBitSet(menu_buttons_held, TWO_PLAYERS_MENU_BACK) && !isBitSet(menu_buttons_released, TWO_PLAYERS_MENU_BACK)) {
                     
                     menu_buttons_pressed = setBit(menu_buttons_pressed, TWO_PLAYERS_MENU_BACK);
                     
                 // Back to main menu button held (2 players mode)
-                } else if (screen == TWO_PLAYERS_GAME && isBitSet(menu_buttons_pressed, TWO_PLAYERS_MENU_BACK)) {
+                } else if (state == TWO_PLAYERS_GAME && isBitSet(menu_buttons_pressed, TWO_PLAYERS_MENU_BACK)) {
                     
                     menu_buttons_held = setBit(menu_buttons_held, TWO_PLAYERS_MENU_BACK);
                     menu_buttons_pressed = unsetBit(menu_buttons_pressed, TWO_PLAYERS_MENU_BACK);
@@ -491,12 +491,12 @@ int main(void) {
             } else if (touch.px >= 52 && touch.px <= 211 && touch.py >= 103 && touch.py <= 123) {
                 
                 // Spanish button pressed in the language menu
-                if (screen == LANGUAGE_MENU && !isBitSet(menu_buttons_pressed, LANGUAGE_MENU_ESPANOL) && !isBitSet(menu_buttons_held, LANGUAGE_MENU_ESPANOL) && !isBitSet(menu_buttons_released, LANGUAGE_MENU_ESPANOL)) {
+                if (state == LANGUAGE_MENU && !isBitSet(menu_buttons_pressed, LANGUAGE_MENU_ESPANOL) && !isBitSet(menu_buttons_held, LANGUAGE_MENU_ESPANOL) && !isBitSet(menu_buttons_released, LANGUAGE_MENU_ESPANOL)) {
                     
                     menu_buttons_pressed = setBit(menu_buttons_pressed, LANGUAGE_MENU_ESPANOL);
                     
                 // Spanish button held in the language menu
-                } else if (screen == LANGUAGE_MENU && isBitSet(menu_buttons_pressed, LANGUAGE_MENU_ESPANOL)) {
+                } else if (state == LANGUAGE_MENU && isBitSet(menu_buttons_pressed, LANGUAGE_MENU_ESPANOL)) {
                     
                     menu_buttons_held = setBit(menu_buttons_held, LANGUAGE_MENU_ESPANOL);
                     menu_buttons_pressed = unsetBit(menu_buttons_pressed, LANGUAGE_MENU_ESPANOL);
@@ -507,12 +507,12 @@ int main(void) {
             } else if (touch.px >= 52 && touch.px <= 211 && touch.py >= 128 && touch.py <= 148) {
                 
                 // French button pressed in the language menu
-                if (screen == LANGUAGE_MENU && !isBitSet(menu_buttons_pressed, LANGUAGE_MENU_FRENCH) && !isBitSet(menu_buttons_held, LANGUAGE_MENU_FRENCH) && !isBitSet(menu_buttons_released, LANGUAGE_MENU_FRENCH)) {
+                if (state == LANGUAGE_MENU && !isBitSet(menu_buttons_pressed, LANGUAGE_MENU_FRENCH) && !isBitSet(menu_buttons_held, LANGUAGE_MENU_FRENCH) && !isBitSet(menu_buttons_released, LANGUAGE_MENU_FRENCH)) {
                     
                     menu_buttons_pressed = setBit(menu_buttons_pressed, LANGUAGE_MENU_FRENCH);
                     
                 // French button held in the language menu
-                } else if (screen == LANGUAGE_MENU && isBitSet(menu_buttons_pressed, LANGUAGE_MENU_FRENCH)) {
+                } else if (state == LANGUAGE_MENU && isBitSet(menu_buttons_pressed, LANGUAGE_MENU_FRENCH)) {
                     
                     menu_buttons_held = setBit(menu_buttons_held, LANGUAGE_MENU_FRENCH);
                     menu_buttons_pressed = unsetBit(menu_buttons_pressed, LANGUAGE_MENU_FRENCH);
@@ -637,38 +637,38 @@ int main(void) {
         if (isBitSet(menu_buttons_released, LANGUAGE_MENU_ENGLISH)) {
             
             language = EN;
-            screen = MAIN_MENU;
+            state = MAIN_MENU;
             
-            showMenu(screen, language);
+            showMenu(state, language);
             
         // Basque button released
         } else if (isBitSet(menu_buttons_released, LANGUAGE_MENU_EUSKARA)) {
             
             language = EU;
-            screen = MAIN_MENU;
+            state = MAIN_MENU;
             
-            showMenu(screen, language);
+            showMenu(state, language);
             
         // Spanish button released
         } else if (isBitSet(menu_buttons_released, LANGUAGE_MENU_ESPANOL)) {
             
             language = ES;
-            screen = MAIN_MENU;
+            state = MAIN_MENU;
             
-            showMenu(screen, language);
+            showMenu(state, language);
             
         // French button released
         } else if (isBitSet(menu_buttons_released, LANGUAGE_MENU_FRENCH)) {
             
             language = FR;
-            screen = MAIN_MENU;
+            state = MAIN_MENU;
             
-            showMenu(screen, language);
+            showMenu(state, language);
             
         // One player mode button released
         } else if (isBitSet(menu_buttons_released, MAIN_MENU_ONE_PLAYER)) {
             
-            screen = ONE_PLAYER_GAME;
+            state = ONE_PLAYER_GAME;
             
             initGameField();
             
@@ -676,11 +676,11 @@ int main(void) {
             
             game_ended = false;
             
-            showMenu(screen, language);
+            showMenu(state, language);
             
         } else if (isBitSet(menu_buttons_released, MAIN_MENU_TWO_PLAYERS)) {
             
-            screen = TWO_PLAYERS_GAME;
+            state = TWO_PLAYERS_GAME;
             
             initGameField();
             
@@ -688,7 +688,7 @@ int main(void) {
             
             game_ended = false;
             
-            showMenu(screen, language);
+            showMenu(state, language);
             
         // Restart button released (1 player mode)
         } else if (isBitSet(menu_buttons_released, ONE_PLAYER_MENU_RESTART)) {
@@ -707,7 +707,7 @@ int main(void) {
         // Back to main menu button released (1 player mode)
         } else if (isBitSet(menu_buttons_released, ONE_PLAYER_MENU_BACK)) {
             
-            screen = MAIN_MENU;
+            state = MAIN_MENU;
             
             // Clear all the sprites of the game
             oamClear(&oamMain, 0, 128);
@@ -715,12 +715,12 @@ int main(void) {
             showSplash();
             
             // Display the main menu
-            showMenu(screen, language);
+            showMenu(state, language);
             
         // Back to main menu button released (2 players mode)
         } else if (isBitSet(menu_buttons_released, TWO_PLAYERS_MENU_BACK)) {
             
-            screen = MAIN_MENU;
+            state = MAIN_MENU;
             
             // Clear all the sprites of the game
             oamClear(&oamMain, 0, 128);
@@ -728,13 +728,13 @@ int main(void) {
             showSplash();
             
             // Display the main menu
-            showMenu(screen, language);
+            showMenu(state, language);
             
         // 
-        } else if (game_ended == false && screen == ONE_PLAYER_GAME || screen == TWO_PLAYERS_GAME) {
+        } else if (game_ended == false && state == ONE_PLAYER_GAME || state == TWO_PLAYERS_GAME) {
             
             // One player mode (VS CPU)
-            if (screen == ONE_PLAYER_GAME) {
+            if (state == ONE_PLAYER_GAME) {
                 
                 // Artificial intelligence for the paddle controlled by the CPU (only in one player mode)
                 
