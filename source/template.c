@@ -725,7 +725,7 @@ int main(void) {
             showMenu(state, language);
             
         // 
-        } else if (game_ended == false && state == ONE_PLAYER_GAME || state == TWO_PLAYERS_GAME) {
+        } else if (game_ended == false && (state == ONE_PLAYER_GAME || state == TWO_PLAYERS_GAME)) {
             
             // One player mode (VS CPU)
             if (state == ONE_PLAYER_GAME) {
