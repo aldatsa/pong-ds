@@ -318,14 +318,14 @@ int main(void) {
     // Rigth paddle
     paddle p2;
     
-    initScreensAndVRAM();
-    
     screen = LANGUAGE_MENU;
     language = EN;
     
+    initScreensAndVRAM();
+    
     showSplash();
     
-    // Show the main menu
+    // Show the language menu
     showMenu(screen, language);
     
     // Initialize the 2D sprite engine of the main (top) screen
