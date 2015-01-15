@@ -210,12 +210,6 @@ int showMenu(int state, unsigned int language) {
         
     }
     
-    // Wait for a vertical blank interrupt
-    swiWaitForVBlank();
-    
-    // Update the oam memories of the main screen
-    oamUpdate(&oamMain);
-    
     return 0;
 
 }
@@ -952,12 +946,6 @@ int main(void) {
                     // Hide the ball
                     oamClearSprite(&oamMain, 0);
                     
-                    // Wait for a vertical blank interrupt
-                    swiWaitForVBlank();
-                    
-                    // Update the oam memories of the main screen
-                    oamUpdate(&oamMain);
-                    
                 }
                 
             // Right border of the screen
@@ -997,12 +985,6 @@ int main(void) {
                     
                     // Hide the ball
                     oamClearSprite(&oamMain, 0);
-                    
-                    // Wait for a vertical blank interrupt
-                    swiWaitForVBlank();
-                    
-                    // Update the oam memories of the main screen
-                    oamUpdate(&oamMain);
                     
                 }
                 
@@ -1062,15 +1044,15 @@ int main(void) {
                     false	//apply mosaic
                     );
                 
-                // Wait for a vertical blank interrupt
-                swiWaitForVBlank();
-                
-                // Update the oam memories of the main screen
-                oamUpdate(&oamMain);
-                
             }
             
         }
+        
+        // Wait for a vertical blank interrupt
+        swiWaitForVBlank();
+        
+        // Update the oam memories of the main screen
+        oamUpdate(&oamMain);
         
 	}
 
