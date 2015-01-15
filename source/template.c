@@ -127,6 +127,8 @@ void initDigits(u8* gfx, u16* sprite_gfx_mem[]) {
 		dmaCopy(gfx, sprite_gfx_mem[i], 32*32);
 		gfx += 32*32;
 	}
+    
+    dmaCopy(digitsPal, SPRITE_PALETTE, 512);
 }
 
 //---------------------------------------------------------------------
@@ -320,8 +322,6 @@ int main(void) {
 	oamInit(&oamMain, SpriteMapping_1D_128, false);
 	
     initDigits((u8*)digitsTiles, sprite_gfx_mem);
-    
-    dmaCopy(digitsPal, SPRITE_PALETTE, 512);
     
     // Allocate graphics memory for the sprites of the ball and the paddles
 	u16* gfx = oamAllocateGfx(&oamMain, SpriteSize_8x8, SpriteColorFormat_256Color);
