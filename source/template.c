@@ -71,21 +71,6 @@ enum languages {
     FR = 3
 };
 
-bool isBitSet(unsigned int value, unsigned int bit_flag) {
-    return (value & bit_flag) != 0;
-}
-
-unsigned int setBit(unsigned int value, unsigned int bit_flag) {
-
-    return value | bit_flag;
-}
-
-unsigned int unsetBit(unsigned int value, unsigned int bit_flag) {
-
-    return value & ~(bit_flag);
-
-}
-
 //---------------------------------------------------------------------
 // Returns a random number between 0 and limit inclusive
 // http://stackoverflow.com/a/2999130/2855012
