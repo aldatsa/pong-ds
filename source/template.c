@@ -37,6 +37,7 @@ License: GPL v3
 #define INITIAL_SPEED 1.5
 #define BALL_HEIGHT 8
 #define BALL_WIDTH 8
+#define PADDLE_INITIAL_SPEED 2
 #define PADDLE_HEIGHT 32
 #define PADDLE_WIDTH 8
 #define SCORE_LIMIT 10
@@ -210,12 +211,12 @@ int initGame(ball *b, paddle *p1, paddle *p2, u16* sprite_gfx_mem[]) {
 
     p1->x = 8;
     p1->y = SCREEN_HEIGHT / 2 - 1 - PADDLE_HEIGHT / 2;
-    p1->speed = 1;
+    p1->speed = PADDLE_INITIAL_SPEED;
     p1->score = 0;
 
     p2->x = SCREEN_WIDTH - PADDLE_WIDTH - 8;
     p2->y = SCREEN_HEIGHT / 2 - 1 - PADDLE_HEIGHT / 2;
-    p2->speed = 1;
+    p2->speed = PADDLE_INITIAL_SPEED;
     p2->score = 0;
 
     // Set the oam entry for the score of the first player
@@ -489,7 +490,7 @@ int main(void) {
                         if (p2.y > 0) {
 
                             // Move the paddle up
-                            p2.y = p2.y - 1;
+                            p2.y = p2.y - p2.speed;
 
                         }
 
@@ -500,7 +501,7 @@ int main(void) {
                         if (p2.y < SCREEN_HEIGHT - PADDLE_HEIGHT) {
 
                             // Move the paddle down
-                            p2.y = p2.y + 1;
+                            p2.y = p2.y + p2.speed;
 
                         }
 
@@ -513,13 +514,13 @@ int main(void) {
                     if (p2.y > SCREEN_HEIGHT / 2 - 1 - PADDLE_HEIGHT / 2) {
 
                         // Move the paddle controlled byt the CPU down
-                        p2.y = p2.y - 1;
+                        p2.y = p2.y - p2.speed;
 
                     // If the paddle controlled by the CPU is below the center of the screen
                     } else {
 
                         // Move the paddle controlled by the CPU up
-                        p2.y = p2.y + 1;
+                        p2.y = p2.y + p2.speed;
 
                     }
                 }
@@ -531,7 +532,7 @@ int main(void) {
                     if (p1.y > 0) {
 
                         // Move the right paddle up
-                        p1.y = p1.y - 1;
+                        p1.y = p1.y - p1.speed;
 
                     }
 
@@ -542,7 +543,7 @@ int main(void) {
                     if (p1.y < SCREEN_HEIGHT - PADDLE_HEIGHT) {
 
                         // Move the right paddle down
-                        p1.y = p1.y + 1;
+                        p1.y = p1.y + p1.speed;
 
                     }
 
@@ -558,7 +559,7 @@ int main(void) {
                     if (p1.y > 0) {
 
                         // Move the right paddle up
-                        p1.y = p1.y - 1;
+                        p1.y = p1.y - p1.speed;
 
                     }
 
@@ -569,7 +570,7 @@ int main(void) {
                     if (p1.y < SCREEN_HEIGHT - PADDLE_HEIGHT) {
 
                         // Move the right paddle down
-                        p1.y = p1.y + 1;
+                        p1.y = p1.y + p1.speed;
 
                     }
 
@@ -581,7 +582,7 @@ int main(void) {
                     // Don't let the paddle move above the top of the screen
                     if (p2.y > 0) {
 
-                        p2.y = p2.y - 1;
+                        p2.y = p2.y - p2.speed;
 
                     }
 
@@ -591,7 +592,7 @@ int main(void) {
                     // Don't let the paddle move below the bottom of the screen
                     if (p2.y < SCREEN_HEIGHT - PADDLE_HEIGHT) {
 
-                        p2.y = p2.y + 1;
+                        p2.y = p2.y + p2.speed;
 
                     }
 
