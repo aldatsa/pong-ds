@@ -208,12 +208,12 @@ int initGame(ball *b, paddle *p1, paddle *p2, u16* sprite_gfx_mem[]) {
     b->speed = INITIAL_SPEED;
     b->angle = rand_lim(360);
 
-    p1->x = 0;
+    p1->x = 8;
     p1->y = SCREEN_HEIGHT / 2 - 1 - PADDLE_HEIGHT / 2;
     p1->speed = 1;
     p1->score = 0;
 
-    p2->x = SCREEN_WIDTH - PADDLE_WIDTH;
+    p2->x = SCREEN_WIDTH - PADDLE_WIDTH - 8;
     p2->y = SCREEN_HEIGHT / 2 - 1 - PADDLE_HEIGHT / 2;
     p2->speed = 1;
     p2->score = 0;
