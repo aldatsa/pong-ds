@@ -321,6 +321,7 @@ int main(void) {
 	mmLoadEffect(SFX_TXALAPARTA1);
     mmLoadEffect(SFX_TXALAPARTA2);
     mmLoadEffect(SFX_TXALAPARTA3);
+    mmLoadEffect(SFX_TXALAPARTA4);
 
 	mm_sound_effect txalaparta1 = {
 		{ SFX_TXALAPARTA1 },	// id
@@ -340,6 +341,14 @@ int main(void) {
 
     mm_sound_effect txalaparta3 = {
         { SFX_TXALAPARTA3 },	// id
+        (int)(1.0f * (1<<10)),	// rate
+        0,		                // handle
+        255,	                // volume
+        255,	                // panning
+    };
+
+    mm_sound_effect txalaparta4 = {
+        { SFX_TXALAPARTA4 },	// id
         (int)(1.0f * (1<<10)),	// rate
         0,		                // handle
         255,	                // volume
@@ -635,7 +644,7 @@ int main(void) {
                 // b.angle = 0 - (b.angle - 0)
                 b.angle = -b.angle;
 
-                mmEffectEx(&txalaparta3);
+                mmEffectEx(&txalaparta4);
 
             // Left paddle collision detection
             } else if (b.x <= p1.x + PADDLE_WIDTH && b.y > p1.y - BALL_HEIGHT && b.y < p1.y + PADDLE_HEIGHT + BALL_HEIGHT) {
