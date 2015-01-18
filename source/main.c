@@ -320,6 +320,7 @@ int main(void) {
 	// load sound effects
 	mmLoadEffect(SFX_TXALAPARTA1);
     mmLoadEffect(SFX_TXALAPARTA2);
+    mmLoadEffect(SFX_TXALAPARTA3);
 
 	mm_sound_effect txalaparta1 = {
 		{ SFX_TXALAPARTA1 },	// id
@@ -336,6 +337,14 @@ int main(void) {
 		255,	                // volume
 		255,	                // panning
 	};
+
+    mm_sound_effect txalaparta3 = {
+        { SFX_TXALAPARTA3 },	// id
+        (int)(1.0f * (1<<10)),	// rate
+        0,		                // handle
+        255,	                // volume
+        255,	                // panning
+    };
 
 	while(1) {
 
@@ -618,11 +627,15 @@ int main(void) {
 
                 b.angle = 180 - (b.angle - 180);
 
+                mmEffectEx(&txalaparta3);
+
             // Top of the screen
             } else if (b.y + b.speed * sin(b.angle * DEGREE_TO_RADIAN) <= 0) {
 
                 // b.angle = 0 - (b.angle - 0)
                 b.angle = -b.angle;
+
+                mmEffectEx(&txalaparta3);
 
             // Left paddle collision detection
             } else if (b.x <= p1.x + PADDLE_WIDTH && b.y > p1.y - BALL_HEIGHT && b.y < p1.y + PADDLE_HEIGHT + BALL_HEIGHT) {
