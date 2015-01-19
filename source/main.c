@@ -29,9 +29,11 @@ License: GPL v3
 #include <one_p_game_menu_en.h>
 #include <one_p_game_menu_eu.h>
 #include <one_p_game_menu_es.h>
+#include <one_p_game_menu_fr.h>
 #include <two_p_game_menu_en.h>
 #include <two_p_game_menu_eu.h>
 #include <two_p_game_menu_es.h>
+#include <two_p_game_menu_fr.h>
 
 #define DEGREE_TO_RADIAN 0.01745329251
 #define INITIAL_SPEED 1.5
@@ -165,6 +167,8 @@ int showMenu(int state, unsigned int language) {
                 decompress(one_p_game_menu_euBitmap, BG_GFX_SUB,  LZ77Vram);
             } else if (language == ES) {
                 decompress(one_p_game_menu_esBitmap, BG_GFX_SUB,  LZ77Vram);
+            } else if (language == FR) {
+                decompress(one_p_game_menu_frBitmap, BG_GFX_SUB,  LZ77Vram);
             }
             break;
 
@@ -175,6 +179,8 @@ int showMenu(int state, unsigned int language) {
                 decompress(two_p_game_menu_euBitmap, BG_GFX_SUB,  LZ77Vram);
             } else if (language == ES) {
                 decompress(two_p_game_menu_esBitmap, BG_GFX_SUB,  LZ77Vram);
+            } else if (language == FR) {
+                decompress(two_p_game_menu_frBitmap, BG_GFX_SUB,  LZ77Vram);
             }
             break;
 
