@@ -23,7 +23,7 @@ How to build and run Pong DS
 
 make
 
-When it's done compiling, transfer the generated Pong.nds file to the root of your SD card.
+When it's done compiling, transfer the generated PongDS.nds file to the root of your SD card.
 
 License
 -------
