@@ -146,14 +146,18 @@ a.button:hover {
   border-left: solid 1px #b3b3b3;
 }
 
+a.button#download-nds {
+	width: 264px;
+}
+
 a.button span {
   display: block;
   height: 23px;
   padding-left: 50px;
 }
 
-#download-zip span {
-  background: transparent url(../images/zip-icon.png) 12px 50% no-repeat;
+#download-nds span {
+  background: transparent url(../images/nintendo_ds_lite_23x23.png) 20px 50% no-repeat;
 }
 #download-tar-gz span {
   background: transparent url(../images/tar-gz-icon.png) 12px 50% no-repeat;
