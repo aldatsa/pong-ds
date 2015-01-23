@@ -98,6 +98,20 @@ header h2 {
   max-width: 100%;
 }
 
+#language-selection {
+	padding-top: 10px;
+	text-align: center;
+}
+
+#language-selection a {
+	color: #aaa;
+	padding: 5px;
+}
+
+#language-selection a.selected {
+	border-bottom: 1px solid #aaa;
+}
+
 #downloads {
   margin-bottom: 40px;
 }
