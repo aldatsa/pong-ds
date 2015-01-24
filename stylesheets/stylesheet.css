@@ -162,10 +162,12 @@ a.button:hover {
 
 a.button#download-nds {
 	width: 264px;
+	margin-left: 63.5px;
 }
 
 a.button#download-nds-eu {
 	width: 310px;
+	margin-left: 40.5px;
 }
 
 a.button span {
@@ -185,6 +187,18 @@ a.button span {
 }
 #view-on-github {
   margin-right: 0;
+}
+
+.screenshots {
+	text-align: center;
+}
+
+.screenshots img {
+	margin: 10px;
+}
+
+.license-logo {
+	text-align: center;
 }
 
 code, pre {
