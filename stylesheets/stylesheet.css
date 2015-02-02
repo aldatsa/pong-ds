@@ -170,13 +170,18 @@ a.button#download-nds-eu {
 	margin-left: 40.5px;
 }
 
+a.button#download-nds-es {
+	width: 310px;
+	margin-left: 40.5px;
+}
+
 a.button span {
   display: block;
   height: 23px;
   padding-left: 50px;
 }
 
-#download-nds span, #download-nds-eu span {
+#download-nds span, #download-nds-eu span, #download-nds-es span {
   background: transparent url(../images/nintendo_ds_lite_23x23.png) 20px 50% no-repeat;
 }
 #download-tar-gz span {
