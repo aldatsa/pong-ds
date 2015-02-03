@@ -207,6 +207,11 @@ a.button span {
 	margin: 10px;
 }
 
+.developer {
+	margin-bottom: 30px;
+	margin-top: 10px;
+}
+
 .license-logo {
 	text-align: center;
 }
