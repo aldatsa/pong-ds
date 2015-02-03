@@ -44,6 +44,8 @@ License: GPL v3
 #define PADDLE_WIDTH 8
 #define SCORE_LIMIT 10
 
+int initial_angles[] = {0, 60, 120, 180, 240, 300, 360};
+
 typedef struct {
    double x;
    double y;
@@ -213,7 +215,7 @@ int initGame(ball *b, paddle *p1, paddle *p2, u16* sprite_gfx_mem[]) {
     b->x = SCREEN_WIDTH / 2 - 1 - BALL_WIDTH / 2;
     b->y = SCREEN_HEIGHT / 2 - 1 - BALL_HEIGHT / 2;
     b->speed = INITIAL_SPEED;
-    b->angle = rand_lim(360);
+    b->angle = initial_angles[rand_lim(5)];
 
     p1->x = 8;
     p1->y = SCREEN_HEIGHT / 2 - 1 - PADDLE_HEIGHT / 2;
