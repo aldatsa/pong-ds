@@ -44,7 +44,7 @@ License: GPL v3
 #define PADDLE_WIDTH 8
 #define SCORE_LIMIT 10
 
-int initial_angles[] = {0, 60, 120, 180, 240, 300, 360};
+int initial_angles[] = {120, 180, 240, 300, 0, 60};
 
 typedef struct {
    double x;
@@ -713,7 +713,7 @@ int main(void) {
                     b.x = SCREEN_WIDTH / 2 - 1 - BALL_WIDTH / 2;
                     b.y = SCREEN_HEIGHT / 2 - 1 - BALL_HEIGHT / 2;
 
-                    b.angle = rand_lim(180) + 270;
+                    b.angle = initial_angles[rand_lim(2) + 3]; // 300, 0, 60
 
                     b.speed = INITIAL_SPEED;
 
@@ -753,8 +753,7 @@ int main(void) {
                     b.x = SCREEN_WIDTH / 2 - 1 - BALL_WIDTH / 2;
                     b.y = SCREEN_HEIGHT / 2 - 1 - BALL_HEIGHT / 2;
 
-                    b.angle = rand_lim(180) + 90;
-
+                    b.angle = initial_angles[rand_lim(2)]; // 120, 180, 240
                     b.speed = INITIAL_SPEED;
 
                 } else {
