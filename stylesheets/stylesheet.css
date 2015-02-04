@@ -212,6 +212,16 @@ a.button span {
 	margin-top: 10px;
 }
 
+.developer .social-buttons #twitter-widget-0 {
+	margin-bottom: -8px;
+	margin-left: 10px;
+}
+
+.developer .social-buttons iframe:first-child {
+	margin-bottom: -8px;
+	margin-left: 10px;
+}
+
 .license-logo {
 	text-align: center;
 }
